@@ -1,0 +1,145 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #F7F9F8;
+    color: #172B28;
+    font-family: "Inter", sans-serif;
+
+}
+.page-content{
+   padding-left: 72px;
+
+   padding-right: 72px;
+}
+a {
+    text-decoration: none;
+}
+
+.nav-main {
+    height: 76px;
+    padding: 0 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.brand-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #156B5D;
+    color: #fff;
+}
+
+.brand-dot {
+    color: #156B5D;
+}
+
+.nav-urls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav-urls a {
+    color: #475853;
+    font-size: 13px;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button {
+    min-height: 36px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #156B5D;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.button-outline {
+    color: #156B5D;
+    background: #fff;
+}
+
+.button-primary {
+    color: #fff;
+    background: #156B5D;
+}
+
+.page-content {
+    flex: 1;
+}
+
+.site-footer {
+    min-height: 52px;
+    padding: 0 72px;
+    border-top: 1px solid #E2EAE7;
+    border-radius: 0 0 12px 12px;
+    background: #fff;
+}
+
+.footer-inner {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer-brand,
+.footer-links a {
+    color: #71807C;
+    font-size: 13px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-urls a:hover,
+.footer-brand:hover,
+.footer-links a:hover {
+    color: #156B5D;
+}

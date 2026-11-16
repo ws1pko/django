@@ -1,0 +1,775 @@
+.campaign-page {
+    width: 100%;
+    max-width: 1296px;
+    margin: 0 auto;
+    padding: 42px 0 64px;
+}
+
+.eyebrow {
+    margin-bottom: 8px;
+    color: #156B5D;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.catalog-heading {
+    margin-bottom: 22px;
+}
+
+.catalog-heading h1 {
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(34px, 3vw, 46px);
+    line-height: 1.16;
+}
+
+.catalog-lead {
+    margin-top: 10px;
+    color: #71807C;
+    font-size: 18px;
+}
+
+.catalog-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.filter-panel,
+.donation-panel {
+    border: 1px solid #E2EAE7;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgb(23 43 40 / 4%);
+}
+
+.filter-panel {
+    padding: 24px;
+}
+
+.filter-panel h2 {
+    margin-bottom: 20px;
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+}
+
+.filter-panel form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.filter-search input,
+.filter-field select,
+.amount-inputs input {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid #D6E1DD;
+    border-radius: 11px;
+    outline: none;
+    background: #fff;
+    color: #273A36;
+    font: inherit;
+    font-size: 14px;
+}
+
+.filter-search input:focus,
+.filter-field select:focus,
+.amount-inputs input:focus,
+.donation-custom input:focus {
+    border-color: #187866;
+    box-shadow: 0 0 0 3px rgb(24 120 102 / 12%);
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #475853;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.amount-filter {
+    min-width: 0;
+    border: 0;
+}
+
+.amount-filter legend {
+    margin-bottom: 8px;
+    color: #475853;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.amount-inputs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.filter-submit,
+.donate-button {
+    min-height: 44px;
+    border: 1px solid #156B5D;
+    border-radius: 11px;
+    background: #156B5D;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.filter-reset {
+    align-self: center;
+    color: #187866;
+    font-size: 13px;
+}
+
+.results-toolbar {
+    min-height: 48px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: #273A36;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sort-form select {
+    min-height: 44px;
+    padding: 0 36px 0 14px;
+    border: 1px solid #D6E1DD;
+    border-radius: 11px;
+    background: #fff;
+    color: #273A36;
+    font: inherit;
+    font-weight: 400;
+}
+
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.catalog-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #E0E9E5;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 5px 16px rgb(23 43 40 / 5%);
+}
+
+.catalog-card-art,
+.detail-art {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.catalog-card-art {
+    height: 170px;
+}
+
+.theme-animals {
+    background: linear-gradient(120deg, #D8EFE8, #BFE2D6);
+}
+
+.theme-family {
+    background: linear-gradient(120deg, #F8DECB, #EFC9AD);
+}
+
+.theme-education {
+    background: linear-gradient(120deg, #E0E4F8, #BFC9EE);
+}
+
+.theme-general {
+    background: linear-gradient(120deg, #E6EEEB, #D5E4DF);
+}
+
+.category-pill {
+    position: absolute;
+    z-index: 1;
+    top: 14px;
+    left: 14px;
+    max-width: calc(100% - 28px);
+    overflow: hidden;
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: rgb(255 255 255 / 94%);
+    color: #187866;
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.category-art-image {
+    width: 112px;
+    height: 112px;
+    object-fit: contain;
+}
+
+.category-art-fallback {
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 72px;
+    line-height: 1;
+}
+
+.theme-animals .category-art-fallback {
+    color: #71807C;
+    font-size: 60px;
+}
+
+.catalog-card-body {
+    padding: 18px 18px 20px;
+}
+
+.organizer-label {
+    margin-bottom: 8px;
+    color: #187866;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.catalog-card h2 {
+    margin-bottom: 8px;
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: 18px;
+    line-height: 1.35;
+}
+
+.campaign-summary {
+    min-height: 40px;
+    margin-bottom: 12px;
+    color: #71807C;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.campaign-progress {
+    width: 100%;
+    height: 7px;
+    display: block;
+    overflow: hidden;
+    margin-bottom: 8px;
+    border: 0;
+    border-radius: 10px;
+    background: #E6EEEB;
+    accent-color: #187866;
+}
+
+.campaign-progress::-webkit-progress-bar {
+    border-radius: 10px;
+    background: #E6EEEB;
+}
+
+.campaign-progress::-webkit-progress-value {
+    border-radius: 10px;
+    background: #187866;
+}
+
+.campaign-progress::-moz-progress-bar {
+    border-radius: 10px;
+    background: #187866;
+}
+
+.amount-row,
+.card-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.amount-row strong {
+    color: #273A36;
+    font-size: 14px;
+}
+
+.amount-row span {
+    color: #71807C;
+    font-size: 11px;
+}
+
+.card-bottom-row {
+    margin-top: 16px;
+}
+
+.days-pill,
+.neutral-tag {
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #F0F4F2;
+    color: #71807C;
+    font-size: 11px;
+}
+
+.card-bottom-row a {
+    color: #187866;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.pagination {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #71807C;
+    font-size: 14px;
+}
+
+.pagination a,
+.pagination span {
+    min-width: 36px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+.pagination .page-current {
+    border-radius: 10px;
+    background: #187866;
+    color: #fff;
+}
+
+.pagination-muted {
+    opacity: .55;
+}
+
+.empty-state {
+    padding: 28px;
+    border: 1px solid #E0E9E5;
+    border-radius: 16px;
+    background: #fff;
+    color: #71807C;
+}
+
+.breadcrumbs {
+    margin: 0 0 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    color: #84918D;
+    font-size: 13px;
+}
+
+.breadcrumbs a {
+    color: inherit;
+}
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: start;
+    gap: 32px;
+}
+
+.detail-main {
+    min-width: 0;
+}
+
+.detail-art {
+    height: 328px;
+    border-radius: 20px;
+}
+
+.detail-art-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.detail-art-fallback {
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 92px;
+    line-height: 1;
+}
+
+.theme-animals .detail-art-fallback {
+    color: #71807C;
+}
+
+.detail-tags {
+    margin: 18px 0 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.verified-tag {
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #E5F4EC;
+    color: #278554;
+    font-size: 12px;
+}
+
+.detail-title {
+    margin-bottom: 10px;
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(30px, 3vw, 40px);
+    line-height: 1.2;
+}
+
+.detail-lead {
+    color: #71807C;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.detail-meta {
+    margin: 18px 0 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: #71807C;
+    font-size: 13px;
+}
+
+.detail-meta strong {
+    color: #475853;
+}
+
+.detail-progress {
+    height: 9px;
+    margin-bottom: 8px;
+}
+
+.detail-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: #71807C;
+    font-size: 12px;
+}
+
+.detail-progress-meta strong {
+    color: #273A36;
+    font-size: 14px;
+}
+
+.detail-tabs {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    border-bottom: 1px solid #E2EAE7;
+}
+
+.detail-tabs a {
+    padding: 0 0 12px;
+    color: #71807C;
+    font-size: 14px;
+}
+
+.detail-tabs a.active {
+    border-bottom: 2px solid #187866;
+    color: #187866;
+    font-weight: 700;
+}
+
+.detail-section {
+    padding: 18px 0;
+    color: #273A36;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.detail-section h2,
+.organizer-panel h2 {
+    margin-bottom: 10px;
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: 20px;
+}
+
+.update-item + .update-item,
+.report-item + .report-item {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #E7EEEB;
+}
+
+.update-date,
+.muted-text {
+    color: #71807C;
+    font-size: 12px;
+}
+
+.update-item h3 {
+    margin: 3px 0 5px;
+    color: #273A36;
+    font-size: 15px;
+}
+
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.report-item strong {
+    flex: 0 0 auto;
+    color: #273A36;
+}
+
+.organizer-panel {
+    margin-top: 10px;
+    padding: 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    border: 1px solid #E2EAE7;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.organizer-avatar {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #E5F4F0;
+    color: #187866;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.organizer-panel .eyebrow {
+    margin-bottom: 4px;
+}
+
+.organizer-panel h2 {
+    margin-bottom: 5px;
+}
+
+.organizer-panel p:last-child {
+    color: #71807C;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.donation-panel {
+    position: sticky;
+    top: 20px;
+    padding: 24px;
+}
+
+.donation-panel h2 {
+    margin-bottom: 10px;
+    color: #172B28;
+    font-family: "Manrope", sans-serif;
+    font-size: 25px;
+}
+
+.donation-description {
+    margin-bottom: 18px;
+    color: #71807C;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.donation-presets {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.donation-presets label {
+    cursor: pointer;
+}
+
+.donation-presets input {
+    position: absolute;
+    opacity: 0;
+}
+
+.donation-presets span {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #D6E1DD;
+    border-radius: 9px;
+    color: #475853;
+    font-size: 13px;
+}
+
+.donation-presets input:checked + span {
+    border-color: #187866;
+    background: #E5F4F0;
+    color: #156B5D;
+    font-weight: 700;
+}
+
+.donation-custom {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #475853;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.donation-custom input {
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid #D6E1DD;
+    border-radius: 10px;
+    outline: none;
+    font: inherit;
+    font-weight: 400;
+}
+
+.donate-button,
+.subscribe-button {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 10px;
+}
+
+.subscribe-button {
+    border: 1px solid #187866;
+    border-radius: 11px;
+    background: #fff;
+    color: #187866;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.donation-note {
+    margin-top: 15px;
+    color: #84918D;
+    font-size: 11px;
+    text-align: center;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+@media (max-width: 1100px) {
+    .catalog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .detail-layout {
+        grid-template-columns: minmax(0, 1fr) 310px;
+        gap: 22px;
+    }
+}
+
+@media (max-width: 760px) {
+    .catalog-layout,
+    .detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-panel {
+        order: 0;
+    }
+
+    .catalog-results {
+        order: 1;
+    }
+
+    .donation-panel {
+        position: static;
+        order: 0;
+    }
+
+    .detail-main {
+        order: 1;
+    }
+
+    .detail-art {
+        height: 260px;
+    }
+}
+
+@media (max-width: 540px) {
+    .campaign-page {
+        padding-top: 28px;
+        padding-bottom: 40px;
+    }
+
+    .catalog-heading h1 {
+        font-size: 32px;
+    }
+
+    .catalog-lead {
+        font-size: 15px;
+    }
+
+    .catalog-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .results-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sort-form,
+    .sort-form select {
+        width: 100%;
+    }
+
+    .catalog-card-art {
+        height: 190px;
+    }
+
+    .detail-title {
+        font-size: 30px;
+    }
+
+    .detail-meta,
+    .detail-progress-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .detail-tabs {
+        gap: 18px;
+    }
+
+    .detail-tabs a {
+        font-size: 13px;
+    }
+}

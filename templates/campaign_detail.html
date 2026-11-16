@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static  %}
+{% load humanize %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/campaign-pages.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<div class="campaign-page detail-page">
+    <nav class="breadcrumbs" aria-label="Навигационная цепочка">
+        <a href="{% url 'campaign_list' %}">Каталог</a>
+        <span aria-hidden="true">/</span>
+        <a href="{% url 'campaign_list' %}?category={{ campaign.category_id }}">{{ campaign.category.name }}</a>
+        <span aria-hidden="true">/</span>
+        <span>Сбор</span>
+    </nav>
+
+    <div class="detail-layout">
+        <article class="detail-main">
+            <div class="detail-art theme-{{ campaign.category.theme|default:'general' }}">
+                <span class="category-pill">{{ campaign.get_status_display }}</span>
+                {% if campaign.category.image %}
+                    <img src="{{ campaign.category.image.url }}" alt="" class="detail-art-image">
+                {% else %}
+                    <span class="detail-art-fallback" aria-hidden="true">
+                        {% if campaign.category.theme == 'animals' %}🐾{% elif campaign.category.theme == 'family' %}♡{% elif campaign.category.theme == 'education' %}✦{% else %}♡{% endif %}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="detail-tags">
+                {% if campaign.organization %}<span class="verified-tag">Организатор проверен</span>{% endif %}
+                <span class="neutral-tag">{{ campaign.category.name }}</span>
+            </div>
+
+            <h1 class="detail-title">{{ campaign.title }}</h1>
+            <p class="detail-lead">{{ campaign.description|truncatechars:220 }}</p>
+
+            <div class="detail-meta">
+                <span>
+                    Организатор:
+                    <strong>{% if campaign.organization %}{{ campaign.organization.name }}{% else %}{{ campaign.organizer.get_full_name|default:campaign.organizer.username }}{% endif %}</strong>
+                </span>
+                <span>Сбор активен до {{ campaign.deadline|date:"j E Y" }}</span>
+            </div>
+
+            <progress class="campaign-progress detail-progress" value="{{ progress_percent|default:campaign.progress_percent|default:0 }}" max="100">
+                {{ progress_percent|default:campaign.progress_percent|default:0 }}%
+            </progress>
+            <div class="detail-progress-meta">
+                <strong>{{ raised_amount|default:campaign.raised_amount|default:0|floatformat:0|intcomma }} ₽ собрано</strong>
+                <span>цель {{ campaign.goal_amount|floatformat:0|intcomma }} ₽ · {{ progress_percent|default:campaign.progress_percent|default:0 }}%</span>
+            </div>
+
+            <nav class="detail-tabs" aria-label="Разделы сбора">
+                <a class="active" href="#about">О сборе</a>
+                <a href="#updates">Новости</a>
+                <a href="#reports">Отчёты</a>
+                <a href="#organization">Организатор</a>
+            </nav>
+
+            <section class="detail-section" id="about">
+                <h2 class="visually-hidden">О сборе</h2>
+                <p>{{ campaign.description }}</p>
+            </section>
+
+            <section class="detail-section" id="updates">
+                <h2>Последнее обновление</h2>
+                {% if updates %}
+                    {% for update in updates %}
+                        <article class="update-item">
+                            <p class="update-date">{{ update.created_at|date:"j E Y" }}</p>
+                            <h3>{{ update.title }}</h3>
+                            <p>{{ update.text|truncatechars:220 }}</p>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted-text">Организатор пока не публиковал новости.</p>
+                {% endif %}
+            </section>
+
+            <section class="detail-section" id="reports">
+                <h2>Отчёты</h2>
+                {% if reports %}
+                    {% for report in reports %}
+                        <article class="report-item">
+                            <div>
+                                <p class="update-date">{{ report.created_at|date:"j E Y" }}</p>
+                                <p>{{ report.description|truncatechars:180 }}</p>
+                            </div>
+                            <strong>{{ report.spent_amount|floatformat:0|intcomma }} ₽</strong>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted-text">Отчёты по этому сбору пока не опубликованы.</p>
+                {% endif %}
+            </section>
+
+            <section class="organizer-panel" id="organization">
+                <div class="organizer-avatar" aria-hidden="true">
+                    {% if campaign.organization %}{{ campaign.organization.name|first|upper }}{% else %}{{ campaign.organizer.username|first|upper }}{% endif %}
+                </div>
+                <div>
+                    <p class="eyebrow">Организатор сбора</p>
+                    <h2>{% if campaign.organization %}{{ campaign.organization.name }}{% else %}{{ campaign.organizer.get_full_name|default:campaign.organizer.username }}{% endif %}</h2>
+                    {% if campaign.organization %}
+                        <p>{{ campaign.organization.description|truncatechars:180 }}</p>
+                    {% else %}
+                        <p>Личный сбор на платформе «добро.рядом».</p>
+                    {% endif %}
+                </div>
+            </section>
+        </article>
+
+        <aside class="donation-panel" aria-labelledby="donation-title">
+            <p class="eyebrow">Каждый вклад важен</p>
+            <h2 id="donation-title">Поддержать сбор</h2>
+            <p class="donation-description">Пожертвование учебное, реальные деньги не списываются.</p>
+
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="donation-presets" role="group" aria-label="Выберите сумму">
+                    <label><input type="radio" name="amount" value="300"><span>300 ₽</span></label>
+                    <label><input type="radio" name="amount" value="500" checked><span>500 ₽</span></label>
+                    <label><input type="radio" name="amount" value="1000"><span>1 000 ₽</span></label>
+                </div>
+
+                <label class="donation-custom" for="donation-amount">
+                    <span>Другая сумма</span>
+                    <input id="donation-amount" type="number" name="custom_amount" min="1" placeholder="Введите сумму">
+                </label>
+
+                <button class="donate-button" type="submit">Пожертвовать</button>
+                <button class="subscribe-button" type="button">Следить за обновлениями</button>
+                <p class="donation-note">🔒 Тестовая операция без списания средств</p>
+            </form>
+        </aside>
+    </div>
+</div>
+{% endblock main %}

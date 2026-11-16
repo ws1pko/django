@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/main-page.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<div class="home-page">
+    <section class="title" aria-labelledby="home-title">
+        <div class="title-one">
+            <p class="title-eyebrow">Помощь рядом начинается с участия</p>
+            <h1 id="home-title" class="title-heading">
+                Вместе мы можем <span>изменить чью-то жизнь</span>
+            </h1>
+            <p class="title-description">
+                Выбирайте проверенные сборы, следите за прогрессом и узнавайте,
+                как ваша помощь меняет ситуацию.
+            </p>
+            <div class="div-buttons">
+                <a href="#campaigns" class="button button-primary">Выбрать сбор</a>
+                <a href="#how-it-works" class="button button-outline">Как это работает</a>
+            </div>
+            <p class="title-note">
+                ✓ Проверенные организаторы <span>·</span>
+                Прозрачные отчёты <span>·</span> Безопасно
+            </p>
+        </div>
+
+        <div class="banner" aria-label="На платформе собрано {{ total_raised|floatformat:0|intcomma }} рублей">
+            <div class="banner-circle banner-circle-yellow" aria-hidden="true"></div>
+            <div class="banner-circle banner-circle-heart" aria-hidden="true">
+                <span>♡</span>
+            </div>
+            <div class="banner-total">
+                <strong>{{ total_raised|floatformat:0|intcomma }} ₽</strong>
+                <span>уже собрано вместе</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-strip" aria-label="Статистика платформы">
+        <div class="stat-item">
+            <strong>{{ active_campaign_count|intcomma }}</strong>
+            <span>активных сборов</span>
+        </div>
+        <div class="stat-item">
+            <strong>{{ participant_count|intcomma }}</strong>
+            <span>добрых участников</span>
+        </div>
+        <div class="stat-item">
+            <strong>{{ completed_percent }}%</strong>
+            <span>сборов завершены</span>
+        </div>
+    </section>
+
+    <section class="campaign-section" id="campaigns" aria-labelledby="campaign-heading">
+        <div class="campaign-heading-row">
+            <div>
+                <p class="section-eyebrow">Выберите, кому помочь</p>
+                <h2 id="campaign-heading">Сборы, которым нужна поддержка</h2>
+            </div>
+            <a class="all-campaigns" href="#campaigns">Все сборы →</a>
+        </div>
+
+        {% if campaigns %}
+            <div class="campaign-grid">
+                {% for campaign in campaigns %}
+                    <article class="campaign-card">
+                        <div class="campaign-visual theme-{{ campaign.visual_theme }}">
+                            <span class="campaign-tag">{{ campaign.category.name }}</span>
+
+                            {% if campaign.category.image %}
+                                <img
+                                    class="campaign-category-image"
+                                    src="{{ campaign.category.image.url }}"
+                                    alt=""
+                                    loading="lazy"
+                                >
+                            {% else %}
+                                <span class="campaign-fallback-icon" aria-hidden="true">
+                                    {% if campaign.visual_theme == 'animals' %}🐾
+                                    {% elif campaign.visual_theme == 'family' %}♡
+                                    {% elif campaign.visual_theme == 'education' %}✦
+                                    {% else %}♡{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="campaign-info">
+                            <p class="campaign-organizer">
+                                {% if campaign.organization %}
+                                    {{ campaign.organization.name }}
+                                {% else %}
+                                    Личный сбор
+                                {% endif %}
+                            </p>
+                            <h3>{{ campaign.title }}</h3>
+                            <p class="campaign-description">
+                                {{ campaign.description }}
+                            </p>
+
+                            <progress
+                                class="campaign-progress"
+                                value="{{ campaign.progress_percent }}"
+                                max="100"
+                                aria-label="Собрано {{ campaign.progress_percent }} процентов цели"
+                            >{{ campaign.progress_percent }}%</progress>
+
+                            <div class="campaign-amount">
+                                <strong>{{ campaign.raised_amount|floatformat:0|intcomma }} ₽</strong>
+                                <span>из {{ campaign.goal_amount|floatformat:0|intcomma }} ₽</span>
+                            </div>
+
+                            <div class="campaign-bottom">
+                                <span class="deadline">
+                                    {% if campaign.days_left == 0 %}
+                                        Последний день
+                                    {% else %}
+                                        Осталось {{ campaign.days_left }} дн.
+                                    {% endif %}
+                                </span>
+                                <a href="{% url 'campaign_detail' campaign.id %}">Подробнее</a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-campaigns">Пока нет активных сборов. Загляните сюда чуть позже.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock main %}

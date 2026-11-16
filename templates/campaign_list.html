@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/campaign-pages.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<div class="campaign-page">
+    <header class="catalog-heading">
+        <p class="eyebrow">Каталог</p>
+        <h1>Сборы, которым нужна поддержка</h1>
+        <p class="catalog-lead">Найдите инициативу, которая вам близка.</p>
+    </header>
+
+    <div class="catalog-layout">
+        <aside class="filter-panel" aria-labelledby="filter-title">
+            <h2 id="filter-title">Фильтры</h2>
+            <form method="get" action="">
+                <label class="filter-search">
+                    <span class="visually-hidden">Название или ключевое слово</span>
+                    <input type="search" name="q" value="{{ request.GET.q }}" placeholder="⌕　Название или ключевое слово">
+                </label>
+
+                <label class="filter-field">
+                    <span>Категория</span>
+                    <select name="category">
+                        <option value="">Все категории</option>
+                        {% for category in categories %}
+                            <option value="{{ category.pk }}" {% if request.GET.category == category.pk|stringformat:'s' %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="filter-field">
+                    <span>Статус</span>
+                    <select name="status">
+                        <option value="active" {% if request.GET.status == 'active' or not request.GET.status %}selected{% endif %}>Активные</option>
+                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Завершённые</option>
+                    </select>
+                </label>
+
+                <fieldset class="filter-field amount-filter">
+                    <legend>Сумма сбора</legend>
+                    <div class="amount-inputs">
+                        <input type="number" name="goal_min" min="0" value="{{ request.GET.goal_min }}" placeholder="От">
+                        <input type="number" name="goal_max" min="0" value="{{ request.GET.goal_max }}" placeholder="До">
+                    </div>
+                </fieldset>
+
+                <button class="filter-submit" type="submit">Показать сборы</button>
+                <a class="filter-reset" href="{% url 'campaign_list' %}">Сбросить фильтры</a>
+            </form>
+        </aside>
+
+        <section class="catalog-results" aria-label="Результаты каталога">
+            <div class="results-toolbar">
+                <p>Найдено <strong>{{ result_count|default:page_obj.paginator.count|default:campaigns|length }}</strong> сбора</p>
+                <form method="get" action="" class="sort-form">
+                    {% for key, value in request.GET.items %}
+                        {% if key != 'sort' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}
+                    {% endfor %}
+                    <label class="visually-hidden" for="campaign-sort">Сортировка сборов</label>
+                    <select id="campaign-sort" name="sort" onchange="this.form.submit()">
+                        <option value="actuality" {% if request.GET.sort == 'actuality' or not request.GET.sort %}selected{% endif %}>Сначала актуальные</option>
+                        <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Сначала новые</option>
+                        <option value="deadline" {% if request.GET.sort == 'deadline' %}selected{% endif %}>Скоро завершатся</option>
+                    </select>
+                </form>
+            </div>
+
+            {% if campaigns %}
+                <div class="catalog-grid">
+                    {% for campaign in campaigns %}
+                        <article class="catalog-card">
+                            <div class="catalog-card-art theme-{{ campaign.category.theme|default:'general' }}">
+                                <span class="category-pill">{{ campaign.category.name }}</span>
+                                {% if campaign.category.image %}
+                                    <img src="{{ campaign.category.image.url }}" alt="" loading="lazy" class="category-art-image">
+                                {% else %}
+                                    <span class="category-art-fallback" aria-hidden="true">
+                                        {% if campaign.category.theme == 'animals' %}🐾{% elif campaign.category.theme == 'family' %}♡{% elif campaign.category.theme == 'education' %}✦{% else %}♡{% endif %}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="catalog-card-body">
+                                <p class="organizer-label">
+                                    {% if campaign.organization %}{{ campaign.organization.name }}{% else %}Личный сбор{% endif %}
+                                </p>
+                                <h2>{{ campaign.title }}</h2>
+                                <p class="campaign-summary">{{ campaign.description|truncatechars:100 }}</p>
+                                <progress class="campaign-progress" value="{{ campaign.progress_percent|default:0 }}" max="100">
+                                    {{ campaign.progress_percent|default:0 }}%
+                                </progress>
+                                <div class="amount-row">
+                                    <strong>{{ campaign.raised_amount|default:0|floatformat:0|intcomma }} ₽</strong>
+                                    <span>из {{ campaign.goal_amount|floatformat:0|intcomma }} ₽</span>
+                                </div>
+                                <div class="card-bottom-row">
+                                    <span class="days-pill">Осталось {{ campaign.days_left|default:0 }} дн.</span>
+                                    <a href="{% url 'campaign_detail' campaign.pk %}">Подробнее →</a>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-state">По выбранным фильтрам сборов не найдено.</p>
+            {% endif %}
+
+            {% if page_obj and page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination" aria-label="Страницы каталога">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">← Назад</a>
+                    {% else %}<span class="pagination-muted">← Назад</span>{% endif %}
+                    {% for page_number in page_obj.paginator.page_range %}
+                        {% if page_number == page_obj.number %}
+                            <span class="page-current" aria-current="page">{{ page_number }}</span>
+                        {% else %}
+                            <a class="page-number" href="?page={{ page_number }}">{{ page_number }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
+                    {% else %}<span class="pagination-muted">Вперёд →</span>{% endif %}
+                </nav>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock main %}
