@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static%}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/organization-pages.css' %}">
+{% endblock extra_css %}
+{% block main %}
+<main class="organization-page">
+    <header class="organization-heading">
+        <p class="eyebrow">Наши партнёры</p>
+        <h1>Проверенные организации</h1>
+        <p class="organization-lead">
+            Познакомьтесь с организациями и поддержите их проекты.
+        </p>
+    </header>
+
+    {% if organizations %}
+        <section class="organization-grid" aria-label="Список организаций">
+            {% for organization in organizations %}
+                <article class="organization-card">
+                    <div class="organization-avatar" aria-hidden="true">
+                        {{ organization.name|first|upper }}
+                    </div>
+
+                    <div class="organization-card-content">
+                        <p class="organization-status">
+                            {{ organization.get_verification_status_display }}
+                        </p>
+
+                        <h2>{{ organization.name }}</h2>
+
+                        <p class="organization-description">
+                            {{ organization.description|truncatechars:180 }}
+                        </p>
+
+                        <a class="organization-link" href="{% url 'organization_detail' organization.pk %}"aria-label="Подробнее об организации {{ organization.name }}">
+                            Подробнее об организации →
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <p class="empty-state">Пока нет организаций для отображения.</p>
+    {% endif %}
+</main>
+{% endblock main %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/organization-pages.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<main class="organization-detail">
+    <nav class="organization-breadcrumbs" aria-label="Навигационная цепочка">
+        <a href="{% url 'home' %}">Главная</a>
+        <span aria-hidden="true">/</span>
+        <a href="{% url 'organizations_list' %}">Организации</a>
+        <span aria-hidden="true">/</span>
+        <span>{{ organization.name }}</span>
+    </nav>
+
+    <section class="organization-profile" aria-labelledby="organization-title">
+        <div class="organization-profile-avatar" aria-hidden="true">
+            {{ organization.name|first|upper }}
+        </div>
+
+        <div class="organization-profile-info">
+            {% if organization.verification_status == 'verified' %}
+                <span class="organization-verified">✓ Организация проверена</span>
+            {% endif %}
+
+            <h1 id="organization-title">{{ organization.name }}</h1>
+            <p>{{ organization.description|truncatechars:220 }}</p>
+
+            {% if organization.verification_status == 'verified' %}
+                <span class="organization-moderation">
+                    Регистрационные данные проверены модератором
+                </span>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="organization-stats" aria-label="Статистика организации">
+        <div class="organization-stat">
+            <strong>{{ completed_campaign_count }}</strong>
+            <span>сборов завершено</span>
+        </div>
+        <div class="organization-stat">
+            <strong>{{ participant_count|intcomma }}</strong>
+            <span>пожертвований</span>
+        </div>
+        <div class="organization-stat">
+            <strong>{{ total_raised|floatformat:0|intcomma }} ₽</strong>
+            <span>собрано вместе</span>
+        </div>
+    </section>
+
+    <section class="organization-campaigns" id="campaigns">
+        <p class="organization-eyebrow">Проекты организации</p>
+        <h2>Активные сборы</h2>
+
+        {% if campaigns %}
+            <div class="organization-campaign-grid">
+                {% for campaign in campaigns %}
+                    <article class="organization-campaign-card">
+                        <div class="organization-campaign-art theme-{{ campaign.category.theme|default:'general' }}">
+                            <span class="organization-category-pill">
+                                {{ campaign.category.name }}
+                            </span>
+
+                            {% if campaign.category.image %}
+                                <img
+                                    src="{{ campaign.category.image.url }}"
+                                    alt=""
+                                    class="organization-category-image"
+                                >
+                            {% else %}
+                                <span class="organization-category-icon" aria-hidden="true">
+                                    {% if campaign.category.theme == 'animals' %}🐾
+                                    {% elif campaign.category.theme == 'family' %}♡
+                                    {% elif campaign.category.theme == 'education' %}✦
+                                    {% else %}♡{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="organization-campaign-body">
+                            <p class="organization-campaign-label">{{ organization.name }}</p>
+                            <h3>{{ campaign.title }}</h3>
+                            <p class="organization-campaign-description">
+                                {{ campaign.description|truncatechars:100 }}
+                            </p>
+
+                            <progress
+                                class="organization-progress"
+                                value="{{ campaign.progress_percent|default:0 }}"
+                                max="100"
+                            >
+                                {{ campaign.progress_percent|default:0 }}%
+                            </progress>
+
+                            <div class="organization-amounts">
+                                <strong>{{ campaign.raised_amount|default:0|floatformat:0|intcomma }} ₽</strong>
+                                <span>из {{ campaign.goal_amount|floatformat:0|intcomma }} ₽</span>
+                            </div>
+
+                            <div class="organization-card-bottom">
+                                <span class="organization-days">
+                                    Осталось {{ campaign.days_left|default:0 }} дн.
+                                </span>
+                                 <a href="{% url 'campaign_detail' campaign.pk %}">
+                                    Подробнее →
+                                 </a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="organization-empty">
+                У организации пока нет активных сборов.
+            </p>
+        {% endif %}
+    </section>
+</main>
+{% endblock main %}

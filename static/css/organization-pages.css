@@ -1,0 +1,445 @@
+.organization-page {
+    width: min(1200px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 56px 0 80px;
+}
+
+.organization-heading {
+    margin-bottom: 32px;
+}
+
+.organization-heading .eyebrow {
+    margin-bottom: 8px;
+    color: #187866;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.organization-heading h1 {
+    margin: 0 0 10px;
+    color: #172b28;
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.15;
+}
+
+.organization-lead {
+    color: #71807c;
+    font-size: 17px;
+}
+
+.organization-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.organization-card {
+    display: flex;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid #e2eae7;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgb(23 43 40 / 4%);
+}
+
+.organization-avatar {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    place-items: center;
+    border-radius: 15px;
+    background: #e5f4f0;
+    color: #187866;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.organization-card-content {
+    min-width: 0;
+}
+
+.organization-status {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #e8f5ee;
+    color: #278653;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.organization-card h2 {
+    margin: 0 0 8px;
+    color: #172b28;
+    font-family: "Manrope", sans-serif;
+    font-size: 19px;
+    line-height: 1.3;
+}
+
+.organization-description {
+    margin: 0 0 16px;
+    color: #71807c;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.organization-link {
+    color: #187866;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.organization-link:hover {
+    color: #10594e;
+    text-decoration: underline;
+}
+
+.empty-state {
+    padding: 32px;
+    border: 1px solid #e2eae7;
+    border-radius: 16px;
+    background: #fff;
+    color: #71807c;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .organization-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .organization-page {
+        width: min(100% - 32px, 480px);
+        padding: 36px 0 56px;
+    }
+
+    .organization-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .organization-card {
+        padding: 18px;
+    }
+}
+
+/* Страница конкретной организации */
+.organization-detail {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 36px 0 64px;
+    color: #273a36;
+}
+
+.organization-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    color: #71807c;
+    font-size: 13px;
+}
+
+.organization-breadcrumbs a {
+    color: #187866;
+    text-decoration: none;
+}
+
+.organization-profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px;
+    border: 1px solid #e2eae7;
+    border-radius: 18px;
+    background: #fff;
+}
+
+.organization-profile-avatar {
+    display: grid;
+    width: 72px;
+    height: 72px;
+    flex: 0 0 72px;
+    place-items: center;
+    border-radius: 20px;
+    background: #e5f4f0;
+    color: #187866;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.organization-profile-info h1 {
+    margin: 8px 0;
+    color: #172b28;
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.2;
+}
+
+.organization-profile-info > p {
+    margin: 0 0 8px;
+    color: #71807c;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.organization-verified {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #e8f5ee;
+    color: #278653;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.organization-moderation {
+    color: #71807c;
+    font-size: 12px;
+}
+
+.organization-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 20px 0 36px;
+    padding: 18px 24px;
+    border: 1px solid #e2eae7;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.organization-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0 18px;
+    border-right: 1px solid #e2eae7;
+}
+
+.organization-stat:first-child {
+    padding-left: 0;
+}
+
+.organization-stat:last-child {
+    border-right: 0;
+}
+
+.organization-stat strong {
+    color: #187866;
+    font-size: 20px;
+}
+
+.organization-stat span {
+    color: #71807c;
+    font-size: 12px;
+}
+
+.organization-eyebrow {
+    margin: 0 0 6px;
+    color: #187866;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.organization-campaigns > h2 {
+    margin: 0 0 18px;
+    color: #172b28;
+    font-family: "Manrope", sans-serif;
+    font-size: 26px;
+}
+
+.organization-campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.organization-campaign-card {
+    overflow: hidden;
+    border: 1px solid #e2eae7;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgb(23 43 40 / 5%);
+}
+
+.organization-campaign-art {
+    position: relative;
+    display: grid;
+    height: 150px;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(125deg, #d8efe8, #c3e3d9);
+}
+
+.organization-campaign-art.theme-family {
+    background: linear-gradient(125deg, #f6dfce, #edc6aa);
+}
+
+.organization-campaign-art.theme-education {
+    background: linear-gradient(125deg, #e2e6fa, #c4ccef);
+}
+
+.organization-campaign-art.theme-general {
+    background: linear-gradient(125deg, #e7eee9, #d4e2dc);
+}
+
+.organization-category-pill {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #fff;
+    color: #187866;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.organization-category-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.organization-category-icon {
+    color: #fff;
+    font-size: 48px;
+}
+
+.organization-campaign-body {
+    padding: 16px;
+}
+
+.organization-campaign-label {
+    margin: 0 0 6px;
+    color: #187866;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.organization-campaign-body h3 {
+    margin: 0 0 6px;
+    color: #172b28;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.organization-campaign-description {
+    min-height: 38px;
+    margin: 0 0 12px;
+    color: #71807c;
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.organization-progress {
+    display: block;
+    width: 100%;
+    height: 7px;
+    accent-color: #187866;
+}
+
+.organization-amounts,
+.organization-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.organization-amounts strong {
+    color: #273a36;
+    font-size: 13px;
+}
+
+.organization-amounts span,
+.organization-days {
+    color: #71807c;
+    font-size: 11px;
+}
+
+.organization-days {
+    padding: 5px 8px;
+    border-radius: 20px;
+    background: #f0f4f2;
+}
+
+.organization-card-bottom a {
+    color: #187866;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.organization-card-bottom a:hover {
+    text-decoration: underline;
+}
+
+.organization-empty {
+    padding: 24px;
+    border: 1px solid #e2eae7;
+    border-radius: 16px;
+    background: #fff;
+    color: #71807c;
+}
+
+@media (max-width: 900px) {
+    .organization-campaign-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .organization-detail {
+        width: calc(100% - 32px);
+        padding: 24px 0 44px;
+    }
+
+    .organization-profile {
+        align-items: flex-start;
+        gap: 14px;
+        padding: 18px;
+    }
+
+    .organization-profile-avatar {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+        border-radius: 15px;
+        font-size: 22px;
+    }
+
+    .organization-stats {
+        padding: 14px 8px;
+    }
+
+    .organization-stat {
+        padding: 0 8px;
+    }
+
+    .organization-stat strong {
+        font-size: 16px;
+    }
+
+    .organization-stat span {
+        font-size: 10px;
+    }
+
+    .organization-campaign-grid {
+        grid-template-columns: 1fr;
+    }
+}

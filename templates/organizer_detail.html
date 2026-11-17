@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/organization-pages.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<main class="organization-detail">
+    <nav class="organization-breadcrumbs" aria-label="Навигационная цепочка">
+        <a href="{% url 'home' %}">Главная</a>
+        <span aria-hidden="true">/</span>
+        <span>Личный организатор</span>
+        <span aria-hidden="true">/</span>
+        <span>{{ organizer.get_full_name|default:organizer.username }}</span>
+    </nav>
+
+    <section class="organization-profile" aria-labelledby="organizer-title">
+        <div class="organization-profile-avatar" aria-hidden="true">
+            {{ organizer.get_full_name|default:organizer.username|first|upper }}
+        </div>
+
+        <div class="organization-profile-info">
+            <span class="organization-verified">Личный организатор</span>
+            <h1 id="organizer-title">
+                {{ organizer.get_full_name|default:organizer.username }}
+            </h1>
+            <p>Организатор личных сборов на платформе «добро.рядом».</p>
+            <span class="organization-moderation">
+                На платформе с {{ organizer.date_joined|date:"j E Y" }}
+            </span>
+        </div>
+    </section>
+
+    <section class="organization-stats" aria-label="Статистика организатора">
+        <div class="organization-stat">
+            <strong>{{ campaigns|length }}</strong>
+            <span>активных личных сборов</span>
+        </div>
+    </section>
+
+    <section class="organization-campaigns">
+        <p class="organization-eyebrow">Проекты человека</p>
+        <h2>Активные личные сборы</h2>
+
+        {% if campaigns %}
+            <div class="organization-campaign-grid">
+                {% for campaign in campaigns %}
+                    <article class="organization-campaign-card">
+                        <div class="organization-campaign-art theme-{{ campaign.category.theme|default:'general' }}">
+                            <span class="organization-category-pill">
+                                {{ campaign.category.name }}
+                            </span>
+
+                            {% if campaign.category.image %}
+                                <img
+                                    src="{{ campaign.category.image.url }}"
+                                    alt=""
+                                    class="organization-category-image"
+                                >
+                            {% else %}
+                                <span class="organization-category-icon" aria-hidden="true">
+                                    {% if campaign.category.theme == 'animals' %}🐾
+                                    {% elif campaign.category.theme == 'family' %}♡
+                                    {% elif campaign.category.theme == 'education' %}✦
+                                    {% else %}♡{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="organization-campaign-body">
+                            <p class="organization-campaign-label">Личный сбор</p>
+                            <h3>{{ campaign.title }}</h3>
+                            <p class="organization-campaign-description">
+                                {{ campaign.description|truncatechars:120 }}
+                            </p>
+
+                            <div class="organization-amounts">
+                                <strong>Цель: {{ campaign.goal_amount|floatformat:0|intcomma }} ₽</strong>
+                                <span>до {{ campaign.deadline|date:"j E Y" }}</span>
+                            </div>
+
+                            <div class="organization-card-bottom">
+                                <a href="{% url 'campaign_detail' campaign.pk %}">
+                                    Подробнее о сборе →
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="organization-empty">
+                У этого организатора пока нет активных личных сборов.
+            </p>
+        {% endif %}
+    </section>
+</main>
+{% endblock main %}

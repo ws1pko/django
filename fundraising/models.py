@@ -28,8 +28,6 @@ class User(AbstractUser):
         ORGANIZER = 'organizer', 'Организатор'
         MODERATOR = 'moderator', 'Модератор'
 
-    # username, password, is_active и date_joined унаследованы от AbstractUser.
-    # Django хранит хеш пароля в поле password.
     email = models.EmailField('электронная почта', unique=True)
     role = models.CharField(
         'роль',

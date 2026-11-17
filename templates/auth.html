@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<main class="auth-page">
+    <section class="auth-card">
+        <div class="auth-welcome">
+            <span class="auth-heart" aria-hidden="true">♡</span>
+            <p class="auth-welcome-label">добро.рядом</p>
+            <h1>Добро начинается<br>с маленького шага</h1>
+            <p>
+                Поддерживайте важные инициативы и следите,
+                как ваша помощь меняет жизнь.
+            </p>
+            <span class="auth-welcome-note">
+                Помогать просто, когда мы рядом.
+            </span>
+        </div>
+
+        <div class="auth-form-side">
+            <p class="auth-eyebrow">Добро пожаловать</p>
+
+            {% if mode == 'register' %}
+                <h2>Создать аккаунт</h2>
+                <p class="auth-description">
+                    Зарегистрируйтесь, чтобы поддерживать сборы или создать свой.
+                </p>
+            {% else %}
+                <h2>С возвращением</h2>
+                <p class="auth-description">
+                    Войдите, чтобы продолжить пользоваться платформой.
+                </p>
+            {% endif %}
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                    <div class="auth-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="auth-field">
+                        {{ field.label_tag }}
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div class="auth-errors">{{ field.errors }}</div>
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <small class="auth-help">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="auth-submit" type="submit">
+                    {% if mode == 'register' %}Создать аккаунт{% else %}Войти{% endif %}
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                {% if mode == 'register' %}
+                    Уже есть аккаунт?
+                    <a href="{% url 'login' %}">Войти</a>
+                {% else %}
+                    Ещё нет аккаунта?
+                    <a href="{% url 'register' %}">Зарегистрироваться</a>
+                {% endif %}
+            </p>
+        </div>
+    </section>
+</main>
+{% endblock main %}

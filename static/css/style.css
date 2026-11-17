@@ -143,3 +143,44 @@ a {
 .footer-links a:hover {
     color: #156B5D;
 }
+[hidden] {
+    display: none !important;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.account-dropdown .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    z-index: 1000;
+    min-width: 190px;
+    padding: 6px;
+    border: 1px solid #e2eae7;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgb(23 43 40 / 12%);
+}
+
+.account-dropdown:hover .dropdown-content,
+.account-dropdown:focus-within .dropdown-content {
+    display: block;
+}
+
+.account-dropdown .dropdown-content a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #273a36;
+    text-decoration: none;
+}
+
+.account-dropdown .dropdown-content a:hover {
+    background: #e5f4f0;
+    color: #156b5d;
+}

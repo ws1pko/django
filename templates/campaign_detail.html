@@ -4,7 +4,7 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/campaign-pages.css' %}">
 {% endblock extra_css %}
-
+{%block javascript%}<script src="{% static 'js/campaign-tabs.js' %}" defer></script>{%endblock javascript%}
 {% block main %}
 <div class="campaign-page detail-page">
     <nav class="breadcrumbs" aria-label="Навигационная цепочка">
@@ -53,18 +53,17 @@
             </div>
 
             <nav class="detail-tabs" aria-label="Разделы сбора">
-                <a class="active" href="#about">О сборе</a>
-                <a href="#updates">Новости</a>
-                <a href="#reports">Отчёты</a>
-                <a href="#organization">Организатор</a>
+                <button class="tab-button active" type="button" data-tab="about">О сборе</button>
+                <button class="tab-button" type="button" data-tab="updates">Новости</button>
+                <button class="tab-button" type="button" data-tab="reports">Отчёты</button>
+                <button class="tab-button" type="button" data-tab="organization">Организатор</button>
             </nav>
-
-            <section class="detail-section" id="about">
+            <section class="detail-section" id="about" >
                 <h2 class="visually-hidden">О сборе</h2>
                 <p>{{ campaign.description }}</p>
             </section>
 
-            <section class="detail-section" id="updates">
+            <section class="detail-section" id="updates" hidden>
                 <h2>Последнее обновление</h2>
                 {% if updates %}
                     {% for update in updates %}
@@ -79,7 +78,7 @@
                 {% endif %}
             </section>
 
-            <section class="detail-section" id="reports">
+            <section class="detail-section" id="reports" hidden>
                 <h2>Отчёты</h2>
                 {% if reports %}
                     {% for report in reports %}
@@ -95,20 +94,35 @@
                     <p class="muted-text">Отчёты по этому сбору пока не опубликованы.</p>
                 {% endif %}
             </section>
+            <section class="organizer-panel" id="organization" hidden>
+                <a class="organizer-panel-link" href="{% if campaign.organization %}{% url 'organization_detail' campaign.organization.pk %}{% else %}{% url 'organizer_detail' campaign.organizer.pk %}{% endif %}">
 
-            <section class="organizer-panel" id="organization">
-                <div class="organizer-avatar" aria-hidden="true">
-                    {% if campaign.organization %}{{ campaign.organization.name|first|upper }}{% else %}{{ campaign.organizer.username|first|upper }}{% endif %}
-                </div>
-                <div>
-                    <p class="eyebrow">Организатор сбора</p>
-                    <h2>{% if campaign.organization %}{{ campaign.organization.name }}{% else %}{{ campaign.organizer.get_full_name|default:campaign.organizer.username }}{% endif %}</h2>
-                    {% if campaign.organization %}
-                        <p>{{ campaign.organization.description|truncatechars:180 }}</p>
-                    {% else %}
-                        <p>Личный сбор на платформе «добро.рядом».</p>
-                    {% endif %}
-                </div>
+                    <div class="organizer-avatar" aria-hidden="true">
+                        {% if campaign.organization %}
+                            {{ campaign.organization.name|first|upper }}
+                        {% else %}
+                            {{ campaign.organizer.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <p class="eyebrow">Организатор сбора</p>
+
+                        <h2>
+                            {% if campaign.organization %}
+                                {{ campaign.organization.name }}
+                            {% else %}
+                                {{ campaign.organizer.get_full_name|default:campaign.organizer.username }}
+                            {% endif %}
+                        </h2>
+
+                        {% if campaign.organization %}
+                            <p>{{ campaign.organization.description|truncatechars:180 }}</p>
+                        {% else %}
+                            <p>Личный сбор на платформе «добро.рядом».</p>
+                        {% endif %}
+                    </div>
+                </a>
             </section>
         </article>
 

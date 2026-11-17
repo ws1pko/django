@@ -1,0 +1,52 @@
+{% load humanize %}
+            <section class="detail-section" id="about">
+                <h2 class="visually-hidden">О сборе</h2>
+                <p>{{ campaign.description }}</p>
+            </section>
+
+            <section class="detail-section" id="updates" hidden>
+                <h2>Последнее обновление</h2>
+                {% if updates %}
+                    {% for update in updates %}
+                        <article class="update-item">
+                            <p class="update-date">{{ update.created_at|date:"j E Y" }}</p>
+                            <h3>{{ update.title }}</h3>
+                            <p>{{ update.text|truncatechars:220 }}</p>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted-text">Организатор пока не публиковал новости.</p>
+                {% endif %}
+            </section>
+
+            <section class="detail-section" id="reports" hidden>
+                <h2>Отчёты</h2>
+                {% if reports %}
+                    {% for report in reports %}
+                        <article class="report-item">
+                            <div>
+                                <p class="update-date">{{ report.created_at|date:"j E Y" }}</p>
+                                <p>{{ report.description|truncatechars:180 }}</p>
+                            </div>
+                            <strong>{{ report.spent_amount|floatformat:0|intcomma }} ₽</strong>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p class="muted-text">Отчёты по этому сбору пока не опубликованы.</p>
+                {% endif %}
+            </section>
+
+            <section class="organizer-panel" id="organization" hidden>
+                <div class="organizer-avatar" aria-hidden="true">
+                    {% if campaign.organization %}{{ campaign.organization.name|first|upper }}{% else %}{{ campaign.organizer.username|first|upper }}{% endif %}
+                </div>
+                <div>
+                    <p class="eyebrow">Организатор сбора</p>
+                    <h2>{% if campaign.organization %}{{ campaign.organization.name }}{% else %}{{ campaign.organizer.get_full_name|default:campaign.organizer.username }}{% endif %}</h2>
+                    {% if campaign.organization %}
+                        <p>{{ campaign.organization.description|truncatechars:180 }}</p>
+                    {% else %}
+                        <p>Личный сбор на платформе «добро.рядом».</p>
+                    {% endif %}
+                </div>
+            </section>
