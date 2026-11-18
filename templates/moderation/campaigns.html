@@ -1,0 +1,36 @@
+{% extends "moderation/base_moderation.html" %}
+{% load humanize %}
+
+{% block moderation_title %}Заявки на сборы{% endblock %}
+{% block moderation_lead %}Проверьте описание, цель сбора и данные организатора перед публикацией.{% endblock %}
+
+{% block moderation_content %}
+<div class="moderation-list">
+  {% for campaign in campaigns %}
+    <article class="moderation-card">
+      <div class="moderation-card-top">
+        <span class="moderation-status status-pending">На проверке</span>
+        <span class="moderation-date">Заявка · {{ campaign.created_at|date:"j E Y" }}</span>
+      </div>
+      <h2>{{ campaign.title }}</h2>
+      <p class="moderation-meta">
+        Организатор: {% if campaign.organization %}{{ campaign.organization.name }}{% else %}{{ campaign.organizer.get_full_name|default:campaign.organizer.username }}{% endif %}
+        · Категория: {{ campaign.category.name }}
+        · Цель: {{ campaign.goal_amount|floatformat:0|intcomma }} ₽
+      </p>
+      <p class="moderation-description">{{ campaign.description|linebreaksbr }}</p>
+      <form method="post" action="{% url 'moderation_campaign_action' campaign.pk %}" class="moderation-form">
+        {% csrf_token %}
+        <label for="comment-{{ campaign.pk }}">Комментарий модератора <span>(нужен при отклонении)</span></label>
+        <textarea id="comment-{{ campaign.pk }}" name="moderation_comment" rows="3" placeholder="Напишите, что нужно исправить или уточнить"></textarea>
+        <div class="moderation-actions">
+          <button class="mod-button mod-approve" type="submit" name="action" value="approve">Одобрить сбор</button>
+          <button class="mod-button mod-reject" type="submit" name="action" value="reject">Отклонить заявку</button>
+        </div>
+      </form>
+    </article>
+  {% empty %}
+    <div class="moderation-empty"><span aria-hidden="true">✓</span><h2>Заявок на проверку нет</h2><p>Новые сборы появятся здесь после отправки организатором.</p></div>
+  {% endfor %}
+</div>
+{% endblock moderation_content %}

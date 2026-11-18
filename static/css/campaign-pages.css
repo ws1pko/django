@@ -402,6 +402,14 @@
     object-fit: contain;
 }
 
+.campaign-cover-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+}
+
 .detail-art-fallback {
     color: #fff;
     font-family: Arial, sans-serif;
@@ -788,3 +796,97 @@
 .organizer-panel-link:hover h2 {
     color: #187866;
 }
+
+@media (max-width: 760px) {
+    .campaign-page {
+        padding-top: 28px;
+        padding-bottom: 40px;
+    }
+
+    .catalog-layout {
+        gap: 18px;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 12px;
+    }
+
+    .filter-grid .amount-filter {
+        grid-column: 1 / -1;
+    }
+
+    .filter-panel,
+    .donation-panel {
+        padding: 20px;
+    }
+
+    .detail-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .detail-main {
+        order: 0;
+    }
+
+    .donation-panel {
+        position: static;
+        order: 1;
+    }
+
+    .breadcrumbs {
+        gap: 7px;
+        font-size: 12px;
+    }
+
+    .detail-art {
+        height: clamp(180px, 52vw, 260px);
+    }
+
+    .detail-tabs {
+        gap: 18px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+
+    .detail-tabs a,
+    .detail-tabs button {
+        flex: 0 0 auto;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    .filter-panel,
+    .donation-panel {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .detail-title {
+        font-size: 27px;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-meta,
+    .detail-progress-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+.campaign-flash-messages { display: grid; gap: 8px; margin: 0 0 18px; }
+.campaign-flash-messages p { margin: 0; padding: 12px 14px; border-radius: 9px; background: #e8f5f1; color: #126b5d; }
+.campaign-flash-messages p.error { background: #fff0ee; color: #a62b21; }
+.subscribe-link { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.updates-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.updates-heading h2 { margin: 0; }
+.updates-add-link { color: #147565; font-size: 14px; font-weight: 700; text-decoration: none; }
+.updates-add-link:hover { text-decoration: underline; }
+@media (max-width: 560px) { .updates-heading { align-items: flex-start; flex-direction: column; } }

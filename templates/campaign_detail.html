@@ -7,6 +7,7 @@
 {%block javascript%}<script src="{% static 'js/campaign-tabs.js' %}" defer></script>{%endblock javascript%}
 {% block main %}
 <div class="campaign-page detail-page">
+    {% if messages %}<div class="campaign-flash-messages" aria-live="polite">{% for message in messages %}<p class="{{ message.tags }}">{{ message }}</p>{% endfor %}</div>{% endif %}
     <nav class="breadcrumbs" aria-label="Навигационная цепочка">
         <a href="{% url 'campaign_list' %}">Каталог</a>
         <span aria-hidden="true">/</span>
@@ -19,7 +20,9 @@
         <article class="detail-main">
             <div class="detail-art theme-{{ campaign.category.theme|default:'general' }}">
                 <span class="category-pill">{{ campaign.get_status_display }}</span>
-                {% if campaign.category.image %}
+                {% if campaign.image %}
+                    <img src="{{ campaign.image.url }}" alt="Иллюстрация сбора: {{ campaign.title }}" class="campaign-cover-image">
+                {% elif campaign.category.image %}
                     <img src="{{ campaign.category.image.url }}" alt="" class="detail-art-image">
                 {% else %}
                     <span class="detail-art-fallback" aria-hidden="true">
@@ -64,13 +67,18 @@
             </section>
 
             <section class="detail-section" id="updates" hidden>
-                <h2>Последнее обновление</h2>
+                <div class="updates-heading">
+                    <h2>Новости сбора</h2>
+                    {% if user.is_authenticated and user.pk == campaign.organizer_id and campaign.status == 'active' %}
+                        <a class="updates-add-link" href="{% url 'campaign_update_create' campaign.pk %}">+ Добавить новость</a>
+                    {% endif %}
+                </div>
                 {% if updates %}
                     {% for update in updates %}
                         <article class="update-item">
                             <p class="update-date">{{ update.created_at|date:"j E Y" }}</p>
                             <h3>{{ update.title }}</h3>
-                            <p>{{ update.text|truncatechars:220 }}</p>
+                            <p>{{ update.text|linebreaksbr }}</p>
                         </article>
                     {% endfor %}
                 {% else %}
@@ -131,8 +139,9 @@
             <h2 id="donation-title">Поддержать сбор</h2>
             <p class="donation-description">Пожертвование учебное, реальные деньги не списываются.</p>
 
-            <form method="post" action="">
+            <form method="post" action="{% url 'campaign_detail' campaign.pk %}">
                 {% csrf_token %}
+                <input type="hidden" name="action" value="donate">
                 <div class="donation-presets" role="group" aria-label="Выберите сумму">
                     <label><input type="radio" name="amount" value="300"><span>300 ₽</span></label>
                     <label><input type="radio" name="amount" value="500" checked><span>500 ₽</span></label>
@@ -141,13 +150,21 @@
 
                 <label class="donation-custom" for="donation-amount">
                     <span>Другая сумма</span>
-                    <input id="donation-amount" type="number" name="custom_amount" min="1" placeholder="Введите сумму">
+                    <input id="donation-amount" type="number" name="custom_amount" min="0.01" step="0.01" placeholder="Введите сумму">
                 </label>
 
                 <button class="donate-button" type="submit">Пожертвовать</button>
-                <button class="subscribe-button" type="button">Следить за обновлениями</button>
                 <p class="donation-note">🔒 Тестовая операция без списания средств</p>
             </form>
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'campaign_detail' campaign.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="{% if is_subscribed %}unsubscribe{% else %}subscribe{% endif %}">
+                    <button class="subscribe-button" type="submit">{% if is_subscribed %}Отписаться от новостей{% else %}Следить за новостями{% endif %}</button>
+                </form>
+            {% else %}
+                <a class="subscribe-button subscribe-link" href="{% url 'login' %}?next={% url 'campaign_detail' campaign.pk %}">Войдите, чтобы следить за новостями</a>
+            {% endif %}
         </aside>
     </div>
 </div>

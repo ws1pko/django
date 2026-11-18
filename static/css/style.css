@@ -37,6 +37,10 @@ a {
     gap: 28px;
 }
 
+.mobile-nav-dropdown {
+    display: none;
+}
+
 .nav-brand {
     display: flex;
     align-items: center;
@@ -152,6 +156,22 @@ a {
     display: inline-block;
 }
 
+.account-dropdown-trigger,
+.mobile-nav-dropdown > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.account-dropdown-trigger::-webkit-details-marker,
+.mobile-nav-dropdown > summary::-webkit-details-marker {
+    display: none;
+}
+
+.account-short-label,
+.register-short-label {
+    display: none;
+}
+
 .account-dropdown .dropdown-content {
     display: none;
     position: absolute;
@@ -167,8 +187,7 @@ a {
     box-shadow: 0 8px 24px rgb(23 43 40 / 12%);
 }
 
-.account-dropdown:hover .dropdown-content,
-.account-dropdown:focus-within .dropdown-content {
+.account-dropdown[open] .dropdown-content {
     display: block;
 }
 
@@ -183,4 +202,158 @@ a {
 .account-dropdown .dropdown-content a:hover {
     background: #e5f4f0;
     color: #156b5d;
+}
+
+.mobile-nav-menu {
+    display: none;
+}
+
+@media (max-width: 760px) {
+    .nav-main {
+        position: relative;
+        z-index: 20;
+        height: 64px;
+        padding: 0 16px;
+        gap: 10px;
+    }
+
+    .nav-left {
+        min-width: 0;
+        flex: 1 1 auto;
+        gap: 0;
+    }
+
+    .nav-left > .nav-brand,
+    .nav-urls {
+        display: none;
+    }
+
+    .mobile-nav-dropdown {
+        position: relative;
+        display: block;
+    }
+
+    .mobile-nav-dropdown > summary {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: #172b28;
+        font-family: "Manrope", sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .brand-icon {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+    }
+
+    .mobile-nav-menu {
+        position: absolute;
+        top: calc(100% + 14px);
+        left: 0;
+        z-index: 30;
+        display: none;
+        width: min(240px, calc(100vw - 32px));
+        padding: 8px;
+        border: 1px solid #e2eae7;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 10px 28px rgb(23 43 40 / 14%);
+    }
+
+    .mobile-nav-dropdown[open] .mobile-nav-menu {
+        display: grid;
+        gap: 2px;
+    }
+
+    .mobile-nav-menu a {
+        display: block;
+        padding: 12px;
+        border-radius: 9px;
+        color: #273a36;
+        font-size: 14px;
+    }
+
+    .mobile-nav-menu a:hover,
+    .mobile-nav-menu a:focus-visible {
+        background: #e5f4f0;
+        color: #156b5d;
+    }
+
+    .nav-actions {
+        flex: 0 0 auto;
+        gap: 6px;
+    }
+
+    .nav-actions > .button,
+    .account-dropdown-trigger {
+        min-height: 34px;
+        padding: 0 10px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .account-short-label,
+    .register-short-label {
+        display: inline;
+    }
+
+    .account-label,
+    .register-label {
+        display: none;
+    }
+
+    .account-dropdown .dropdown-content {
+        top: calc(100% + 8px);
+        right: 0;
+    }
+
+    .page-content {
+        width: 100%;
+        min-width: 0;
+        overflow-x: clip;
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .site-footer {
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 380px) {
+    .nav-main {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .mobile-nav-dropdown > summary {
+        font-size: 14px;
+    }
+
+    .nav-actions > .button,
+    .account-dropdown-trigger {
+        padding-right: 8px;
+        padding-left: 8px;
+        font-size: 10px;
+    }
+
+    .site-footer {
+        padding: 10px 12px;
+    }
+
+    .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 0;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
 }

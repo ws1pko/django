@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/campaign-form.css' %}">{% endblock %}
+{% block main %}
+<main class="campaign-form-page">
+  <header class="campaign-form-heading">
+    <p class="form-eyebrow">Кабинет организатора</p>
+    <h1>{{ page_title }}</h1>
+    <p>{% if is_edit %}Обновите информацию о сборе и отправьте изменения на проверку.{% else %}Расскажите, кому нужна помощь. Заявку перед публикацией проверит модератор.{% endif %}</p>
+    {% if is_edit %}<span class="campaign-state">● {{ campaign.get_status_display }}</span>{% endif %}
+  </header>
+
+  <form class="campaign-form-card" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-field">
+      <label for="{{ form.campaign_type.id_for_label }}">Тип сбора</label>
+      {{ form.campaign_type }}{% for error in form.campaign_type.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <div class="form-field">
+      <label for="{{ form.organization.id_for_label }}">Организация <span class="optional">для сбора от организации</span></label>
+      {{ form.organization }}{% for error in form.organization.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      {% if not form.fields.organization.queryset.exists %}<small class="field-help">Пока нет проверенных организаций. Можно подать заявку в разделе «Стать организацией».</small>{% endif %}
+    </div>
+    <div class="form-field">
+      <label for="{{ form.title.id_for_label }}">Название сбора</label>
+      {{ form.title }}{% for error in form.title.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="{{ form.category.id_for_label }}">Категория</label>
+        {{ form.category }}{% for error in form.category.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      </div>
+      <div class="form-field">
+        <label for="{{ form.goal_amount.id_for_label }}">Целевая сумма, ₽</label>
+        {{ form.goal_amount }}{% for error in form.goal_amount.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      </div>
+    </div>
+    <div class="form-field">
+      <label for="{{ form.deadline.id_for_label }}">Срок сбора</label>
+      {{ form.deadline }}{% for error in form.deadline.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <div class="form-field">
+      <label for="{{ form.description.id_for_label }}">Описание</label>
+      {{ form.description }}{% for error in form.description.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+    </div>
+    <label class="group-option" for="{{ form.is_group.id_for_label }}">
+      {{ form.is_group }}<span><strong>Сделать сбор групповым</strong><small>Участники смогут присоединиться и помочь вместе.</small></span>
+    </label>
+    <div class="form-field">
+      <label for="{{ form.image.id_for_label }}">Изображение сбора</label>
+      {% if campaign.image %}<p class="current-image">Сейчас загружено: <a href="{{ campaign.image.url }}" target="_blank" rel="noopener">{{ campaign.image.name|cut:'campaigns/' }}</a></p>{% endif %}
+      {{ form.image }}{% for error in form.image.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      <small class="field-help">JPG, PNG или WebP. Можно оставить пустым.</small>
+    </div>
+    <div class="form-actions">
+      <button class="form-submit" type="submit">{% if is_edit %}Сохранить изменения и отправить на проверку{% else %}Отправить на модерацию{% endif %}</button>
+      <a class="form-cancel" href="{% url 'account_campaigns' %}">Отмена</a>
+      <p>Перед публикацией сбор проверит модератор.</p>
+    </div>
+  </form>
+</main>
+{% endblock %}

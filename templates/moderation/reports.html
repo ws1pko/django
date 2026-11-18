@@ -1,0 +1,39 @@
+{% extends "moderation/base_moderation.html" %}
+{% load humanize %}
+
+{% block moderation_title %}Отчёты на проверке{% endblock %}
+{% block moderation_lead %}Проверьте результаты сбора, сумму расходов и подтверждающие документы.{% endblock %}
+
+{% block moderation_content %}
+<div class="moderation-list">
+  {% for report in reports %}
+    <article class="moderation-card">
+      <div class="moderation-card-top"><span class="moderation-status status-pending">На проверке</span><span class="moderation-date">{{ report.created_at|date:"j E Y" }}</span></div>
+      <h2>Отчёт по сбору «{{ report.campaign.title }}»</h2>
+      <p class="moderation-meta">
+        Организатор: {% if report.campaign.organization %}{{ report.campaign.organization.name }}{% else %}{{ report.author.get_full_name|default:report.author.username }}{% endif %}
+        · Потрачено: <strong>{{ report.spent_amount|floatformat:0|intcomma }} ₽</strong>
+      </p>
+      <p class="moderation-description">{{ report.description|linebreaksbr }}</p>
+      {% if report.documents.all %}
+        <div class="moderation-documents" aria-label="Документы отчёта">
+          {% for document in report.documents.all %}
+            <a href="{{ document.file.url }}" target="_blank" rel="noopener">▤ {{ document.caption|default:document.file.name }} <span>Открыть документ ↗</span></a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="moderation-meta">К отчёту не приложены документы.</p>
+      {% endif %}
+      <form method="post" action="{% url 'moderation_report_action' report.pk %}" class="moderation-form">
+        {% csrf_token %}
+        <div class="moderation-actions">
+          <button class="mod-button mod-approve" type="submit" name="action" value="approve">Одобрить отчёт</button>
+          <button class="mod-button mod-reject" type="submit" name="action" value="reject">Отклонить</button>
+        </div>
+      </form>
+    </article>
+  {% empty %}
+    <div class="moderation-empty"><span aria-hidden="true">✓</span><h2>Отчётов на проверке нет</h2><p>Новые отчёты появятся здесь после отправки организатором.</p></div>
+  {% endfor %}
+</div>
+{% endblock moderation_content %}

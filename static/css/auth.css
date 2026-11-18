@@ -164,26 +164,133 @@
     text-decoration: underline;
 }
 
+.auth-divider {
+    height: 1px;
+    margin-top: 22px;
+    background: #e2eae7;
+}
+
+.auth-terms {
+    margin: 14px 0 0;
+    color: #71807c;
+    font-size: 11px;
+    line-height: 1.5;
+    text-align: center;
+}
+
 @media (max-width: 680px) {
     .auth-page {
         min-height: auto;
-        padding: 28px 16px;
+        padding: 24px 0 40px;
     }
 
     .auth-card {
+        width: 100%;
         grid-template-columns: 1fr;
+        border-radius: 22px;
     }
 
     .auth-welcome {
-        padding: 28px;
+        min-height: 240px;
+        justify-content: center;
+        padding: 32px 30px;
     }
 
+    .auth-welcome-label,
+    .auth-welcome > p:not(.auth-welcome-label),
     .auth-welcome-note {
-        margin-top: 20px;
-        padding-top: 0;
+        display: none;
+    }
+
+    .auth-heart {
+        display: grid;
+        width: 52px;
+        height: 52px;
+        margin: 0 0 18px;
+        place-items: center;
+        border-radius: 16px;
+        background: rgb(255 255 255 / 16%);
+        font-size: 32px;
+    }
+
+    .auth-welcome h1 {
+        max-width: 330px;
+        margin: 0;
+        font-size: clamp(26px, 7vw, 34px);
     }
 
     .auth-form-side {
-        padding: 28px;
+        padding: 30px 28px 32px;
+    }
+
+    .auth-form-side h2 {
+        margin-bottom: 10px;
+        font-size: clamp(30px, 8vw, 40px);
+        line-height: 1.12;
+    }
+
+    .auth-description {
+        margin-bottom: 24px;
+        font-size: 17px;
+    }
+
+    .auth-form {
+        gap: 16px;
+    }
+
+    .auth-field {
+        gap: 8px;
+        font-size: 14px;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        min-height: 52px;
+        padding: 0 14px;
+        font-size: 16px;
+    }
+
+    .auth-submit {
+        min-height: 50px;
+        font-size: 15px;
+    }
+
+    .auth-switch {
+        margin-top: 18px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .auth-divider {
+        height: 1px;
+        margin-top: 24px;
+        background: #e2eae7;
+    }
+
+    .auth-terms {
+        margin-top: 16px;
+        color: #71807c;
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: center;
+    }
+}
+
+@media (max-width: 420px) {
+    .auth-card {
+        border-radius: 14px;
+    }
+
+    .auth-welcome {
+        min-height: 220px;
+        padding: 28px 24px;
+    }
+
+    .auth-form-side {
+        padding: 26px 22px 28px;
+    }
+
+    .auth-form-side h2 {
+        font-size: 24px;
     }
 }

@@ -118,7 +118,7 @@
 
 @media (max-width: 600px) {
     .organization-page {
-        width: min(100% - 32px, 480px);
+        width: 100%;
         padding: 36px 0 56px;
     }
 
@@ -405,7 +405,7 @@
 
 @media (max-width: 600px) {
     .organization-detail {
-        width: calc(100% - 32px);
+        width: 100%;
         padding: 24px 0 44px;
     }
 
@@ -441,5 +441,19 @@
 
     .organization-campaign-grid {
         grid-template-columns: 1fr;
+    }
+
+    .organization-stats {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    }
+
+    .organization-profile {
+        align-items: flex-start;
+        padding: 18px;
+    }
+
+    .organization-breadcrumbs {
+        gap: 7px;
+        font-size: 12px;
     }
 }

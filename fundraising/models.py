@@ -161,6 +161,12 @@ class Campaign(models.Model):
             MaxLengthValidator(10000),
         ],
     )
+    image = models.FileField(
+        'изображение сбора',
+        upload_to='campaigns/',
+        blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])],
+    )
     goal_amount = models.DecimalField(
         'целевая сумма',
         max_digits=12,

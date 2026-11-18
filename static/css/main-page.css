@@ -454,3 +454,88 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 760px) {
+    .home-page {
+        width: 100%;
+        min-width: 0;
+        padding-top: 30px;
+        padding-bottom: 32px;
+    }
+
+    .title {
+        width: 100%;
+        min-width: 0;
+        gap: 24px;
+    }
+
+    .title-heading,
+    .title-description,
+    .title-note,
+    .campaign-section,
+    .campaign-heading-row {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .stats-strip {
+        width: 100%;
+        min-width: 0;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stat-item {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .banner {
+        justify-self: stretch;
+        max-width: none;
+    }
+}
+
+@media (max-width: 540px) {
+    .home-page {
+        padding-top: 30px;
+    }
+
+    .title-heading {
+        font-size: clamp(30px, 8vw, 36px);
+        line-height: 1.18;
+    }
+
+    .title-description {
+        font-size: 16px;
+        line-height: 1.55;
+    }
+
+    .div-buttons {
+        gap: 10px;
+    }
+
+    .div-buttons .button {
+        min-height: 44px;
+        padding: 0 14px;
+    }
+
+    .banner {
+        height: clamp(220px, 64vw, 280px);
+        border-radius: 22px;
+    }
+
+    .stats-strip {
+        margin-top: 20px;
+        padding: 14px 8px;
+        border-radius: 18px;
+    }
+
+    .stat-item strong {
+        font-size: clamp(15px, 4.5vw, 20px);
+    }
+
+    .stat-item span {
+        font-size: 10px;
+        line-height: 1.35;
+    }
+}

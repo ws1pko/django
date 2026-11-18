@@ -16,3 +16,9 @@ buttons.forEach((button) => {
         });
     });
 });
+
+const requestedTab = window.location.hash.slice(1);
+if (requestedTab && sections.some((section) => section.id === requestedTab)) {
+    const button = document.querySelector(`.detail-tabs .tab-button[data-tab="${requestedTab}"]`);
+    if (button) button.click();
+}

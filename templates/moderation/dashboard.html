@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/moderation.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<main class="moderation-page moderation-dashboard">
+  <header class="dashboard-hero">
+    <div>
+      <p class="moderation-eyebrow">Рабочее пространство</p>
+      <h1>Панель модератора</h1>
+      <p class="moderation-lead">Проверяйте кампании, организации и отчёты.</p>
+    </div>
+    <div class="moderator-avatar" aria-label="{{ moderator_name }}">{{ moderator_initial }}</div>
+  </header>
+
+  <section class="moderation-stats" aria-label="Количество заявок на проверке">
+    <article class="moderation-stat">
+      <span>Заявки на сборы</span>
+      <strong>{{ campaign_count }}</strong>
+      <small>требуют проверки</small>
+    </article>
+    <article class="moderation-stat">
+      <span>Организации</span>
+      <strong>{{ organization_count }}</strong>
+      <small>на проверке</small>
+    </article>
+    <article class="moderation-stat">
+      <span>Отчёты</span>
+      <strong>{{ report_count }}</strong>
+      <small>ожидают решения</small>
+    </article>
+  </section>
+
+  <section class="moderation-shortcuts" aria-label="Перейти к проверке">
+    <a class="moderation-shortcut" href="{% url 'moderation_campaigns' %}">
+      <span class="shortcut-icon" aria-hidden="true">◷</span>
+      <span class="shortcut-title">Проверить сборы</span>
+      <span class="shortcut-count">{{ campaign_count }} {% if campaign_count == 1 %}новая заявка{% else %}новых заявок{% endif %} →</span>
+    </a>
+    <a class="moderation-shortcut" href="{% url 'moderation_organizations' %}">
+      <span class="shortcut-icon" aria-hidden="true">▣</span>
+      <span class="shortcut-title">Проверить организации</span>
+      <span class="shortcut-count">{{ organization_count }} {% if organization_count == 1 %}заявка{% else %}заявки{% endif %} →</span>
+    </a>
+    <a class="moderation-shortcut" href="{% url 'moderation_reports' %}">
+      <span class="shortcut-icon" aria-hidden="true">▤</span>
+      <span class="shortcut-title">Проверить отчёты</span>
+      <span class="shortcut-count">{{ report_count }} {% if report_count == 1 %}отчёт{% else %}отчёта{% endif %} →</span>
+    </a>
+  </section>
+</main>
+{% endblock main %}

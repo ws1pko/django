@@ -24,28 +24,49 @@
                 <span>добро<span class="brand-dot">.</span>рядом</span>
             </a>
 
+            <details class="mobile-nav-dropdown">
+                <summary class="nav-brand">
+                    <span class="brand-icon" aria-hidden="true">♡</span>
+                    <span>добро<span class="brand-dot">.</span>рядом</span>
+                </summary>
+                <div class="mobile-nav-menu">
+                    <a href="{% url 'home' %}">Главная</a>
+                    <a href="{% url 'campaign_list' %}">Сборы</a>
+                    <a href="{% url 'organizations_list' %}">Организации</a>
+                    <a href="{% url 'how_to_help' %}">Как помочь</a>
+                </div>
+            </details>
+
             <div class="nav-urls">
                 <a href="{% url 'campaign_list' %}">Сборы</a>
                 <a  href="{% url 'organizations_list' %}">Организации</a>
-                <a href="#">Как помочь</a>
+                <a href="{% url 'how_to_help' %}">Как помочь</a>
             </div>
         </div>
 
         <div class="nav-actions">
             {% if user.is_authenticated %}
-                <div class="dropdown account-dropdown">
-                    <a class="button button-outline account-dropdown-trigger" href="#">
-                        Личный кабинет
-                    </a>
-
+                <details class="dropdown account-dropdown">
+                    <summary class="button button-outline account-dropdown-trigger">
+                        <span class="account-label">Личный кабинет</span>
+                        <span class="account-short-label">ЛК</span>
+                    </summary>
                     <div class="dropdown-content">
-                        <a href="#">Профиль</a>
-                        <a href="#">Мои сборы</a>
-                        <a href="#">Мои пожертвования</a>
+                        {% if user.role == 'moderator' or user.is_superuser %}
+                            <a href="{% url 'moderation_dashboard' %}">Панель модератора</a>
+                            <a href="{% url 'moderation_campaigns' %}">Модерация сборов</a>
+                            <a href="{% url 'moderation_organizations' %}">Проверка организаций</a>
+                            <a href="{% url 'moderation_reports' %}">Проверка отчётов</a>
+                        {% endif %}
+                        <a href="{% url 'account_profile' %}">Профиль</a>
+                        <a href="{% url 'account_campaigns' %}">Мои сборы</a>
+                        <a href="{% url 'account_donations' %}">Мои пожертвования</a>
+                        <a href="{% url 'account_subscriptions' %}">Подписки</a>
+                        <a href="{% url 'account_organization' %}">Стать организацией</a>
                         <a href="{% url 'logout' %}">Выйти</a>
                     </div>
-                </div>
-                <a class="button button-primary" href="">
+                </details>
+                <a class="button button-primary" href="{% url 'campaign_create' %}">
                     Создать сбор
                 </a>
             {% else %}
@@ -53,7 +74,8 @@
                     Войти
                 </a>
                 <a class="button button-primary" href="{% url 'register' %}">
-                    Создать аккаунт
+                    <span class="register-label">Создать аккаунт</span>
+                    <span class="register-short-label">Регистрация</span>
                 </a>
             {% endif %}
         </div>
@@ -73,8 +95,8 @@
             </a>
 
             <nav class="footer-links" aria-label="Ссылки в подвале">
-                <a href="#">О проекте</a>
-                <a href="#">Помощь</a>
+                <a href="{% url 'how_to_help' %}#about">О проекте</a>
+                <a href="{% url 'how_to_help' %}">Помощь</a>
                 <a href="#">Контакты</a>
             </nav>
         </div>

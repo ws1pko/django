@@ -1,0 +1,27 @@
+{% extends "moderation/base_moderation.html" %}
+
+{% block moderation_title %}Проверка организаций{% endblock %}
+{% block moderation_lead %}Проверьте данные организации и подтвердите, что она может проводить сборы.{% endblock %}
+
+{% block moderation_content %}
+<div class="moderation-list">
+  {% for organization in organizations %}
+    <article class="moderation-card">
+      <div class="moderation-card-top"><span class="moderation-status status-pending">На проверке</span><span class="moderation-date">Заявка · {{ organization.created_at|date:"j E Y" }}</span></div>
+      <h2>{{ organization.name }}</h2>
+      <p class="moderation-meta">Регистрационный номер: <strong>{{ organization.registration_number }}</strong></p>
+      <p class="moderation-description">{{ organization.description|linebreaksbr }}</p>
+      <p class="moderation-meta">Заявитель: {{ organization.created_by.get_full_name|default:organization.created_by.username }}</p>
+      <form method="post" action="{% url 'moderation_organization_action' organization.pk %}" class="moderation-form">
+        {% csrf_token %}
+        <div class="moderation-actions">
+          <button class="mod-button mod-approve" type="submit" name="action" value="approve">Подтвердить организацию</button>
+          <button class="mod-button mod-reject" type="submit" name="action" value="reject">Отклонить</button>
+        </div>
+      </form>
+    </article>
+  {% empty %}
+    <div class="moderation-empty"><span aria-hidden="true">✓</span><h2>Заявок организаций нет</h2><p>Новые заявки появятся здесь после отправки представителем.</p></div>
+  {% endfor %}
+</div>
+{% endblock moderation_content %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/moderation.css' %}">
+{% endblock extra_css %}
+
+{% block main %}
+<main class="moderation-page">
+  <div class="moderation-heading">
+    <p class="moderation-eyebrow">Модерация</p>
+    <h1>{% block moderation_title %}{% endblock %}</h1>
+    <p class="moderation-lead">{% block moderation_lead %}{% endblock %}</p>
+  </div>
+
+  <nav class="moderation-tabs" aria-label="Разделы модерации">
+    <a href="{% url 'moderation_dashboard' %}">Обзор</a>
+    <a class="{% if moderation_section == 'campaigns' %}active{% endif %}" href="{% url 'moderation_campaigns' %}">Заявки на сборы</a>
+    <a class="{% if moderation_section == 'organizations' %}active{% endif %}" href="{% url 'moderation_organizations' %}">Организации</a>
+    <a class="{% if moderation_section == 'reports' %}active{% endif %}" href="{% url 'moderation_reports' %}">Отчёты</a>
+  </nav>
+
+  {% if messages %}
+    <div class="moderation-messages" aria-live="polite">
+      {% for message in messages %}<p class="moderation-message {{ message.tags }}">{{ message }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
+  {% block moderation_content %}{% endblock %}
+</main>
+{% endblock main %}

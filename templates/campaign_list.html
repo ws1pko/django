@@ -22,33 +22,35 @@
                     <input type="search" name="q" value="{{ request.GET.q }}" placeholder="⌕　Название или ключевое слово">
                 </label>
 
-                <label class="filter-field">
-                    <span>Категория</span>
-                    <select name="category">
-                        <option value="">Все категории</option>
-                        {% for category in categories %}
-                            <option value="{{ category.pk }}" {% if request.GET.category == category.pk|stringformat:'s' %}selected{% endif %}>
-                                {{ category.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </label>
+                <div class="filter-grid">
+                    <label class="filter-field">
+                        <span>Категория</span>
+                        <select name="category">
+                            <option value="">Все категории</option>
+                            {% for category in categories %}
+                                <option value="{{ category.pk }}" {% if request.GET.category == category.pk|stringformat:'s' %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
 
-                <label class="filter-field">
-                    <span>Статус</span>
-                    <select name="status">
-                        <option value="active" {% if request.GET.status == 'active' or not request.GET.status %}selected{% endif %}>Активные</option>
-                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Завершённые</option>
-                    </select>
-                </label>
+                    <label class="filter-field">
+                        <span>Статус</span>
+                        <select name="status">
+                            <option value="active" {% if request.GET.status == 'active' or not request.GET.status %}selected{% endif %}>Активные</option>
+                            <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Завершённые</option>
+                        </select>
+                    </label>
 
-                <fieldset class="filter-field amount-filter">
-                    <legend>Сумма сбора</legend>
-                    <div class="amount-inputs">
-                        <input type="number" name="goal_min" min="0" value="{{ request.GET.goal_min }}" placeholder="От">
-                        <input type="number" name="goal_max" min="0" value="{{ request.GET.goal_max }}" placeholder="До">
-                    </div>
-                </fieldset>
+                    <fieldset class="filter-field amount-filter">
+                        <legend>Сумма сбора</legend>
+                        <div class="amount-inputs">
+                            <input type="number" name="goal_min" min="0" value="{{ request.GET.goal_min }}" placeholder="От">
+                            <input type="number" name="goal_max" min="0" value="{{ request.GET.goal_max }}" placeholder="До">
+                        </div>
+                    </fieldset>
+                </div>
 
                 <button class="filter-submit" type="submit">Показать сборы</button>
                 <a class="filter-reset" href="{% url 'campaign_list' %}">Сбросить фильтры</a>
@@ -77,7 +79,9 @@
                         <article class="catalog-card">
                             <div class="catalog-card-art theme-{{ campaign.category.theme|default:'general' }}">
                                 <span class="category-pill">{{ campaign.category.name }}</span>
-                                {% if campaign.category.image %}
+                                {% if campaign.image %}
+                                    <img src="{{ campaign.image.url }}" alt="" loading="lazy" class="category-art-image">
+                                {% elif campaign.category.image %}
                                     <img src="{{ campaign.category.image.url }}" alt="" loading="lazy" class="category-art-image">
                                 {% else %}
                                     <span class="category-art-fallback" aria-hidden="true">
