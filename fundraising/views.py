@@ -3,6 +3,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.db import transaction
 from django.db.models import DecimalField, Max, Q, Sum, Value
 from django.db.models.functions import Coalesce
 
@@ -12,8 +13,8 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import CampaignParticipant, CampaignUpdate, Category, Donation, Report, Campaign, Organization, Subscription, User
-from .forms import CampaignForm, CampaignUpdateForm, LoginForm, OrganizationApplicationForm, RegisterForm
+from .models import CampaignParticipant, CampaignUpdate, Category, Donation, Report, ReportDocument, Campaign, Organization, Subscription, User
+from .forms import CampaignForm, CampaignUpdateForm, LoginForm, OrganizationApplicationForm, RegisterForm, ReportForm
 
 def moderator_required(view_func):
     return user_passes_test(
@@ -385,6 +386,35 @@ def campaign_update_create(request, campaign_id):
     })
 
 
+@login_required(login_url='login')
+def campaign_report_create(request, campaign_id):
+    campaign = get_object_or_404(
+        Campaign.objects.select_related('organizer'),
+        pk=campaign_id,
+        organizer=request.user,
+        status__in=(Campaign.Status.ACTIVE, Campaign.Status.COMPLETED, Campaign.Status.CLOSED),
+    )
+    form = ReportForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        with transaction.atomic():
+            report = form.save(commit=False)
+            report.campaign = campaign
+            report.author = request.user
+            report.status = Report.Status.PENDING
+            report.save()
+            ReportDocument.objects.create(
+                report=report,
+                file=form.cleaned_data['document'],
+                caption=form.cleaned_data['caption'],
+            )
+        messages.success(request, 'Отчёт отправлен модератору. После проверки он появится на странице сбора.')
+        return redirect('account_campaigns')
+    return render(request, 'campaign_report_form.html', {
+        'campaign': campaign,
+        'form': form,
+    })
+
+
 def how_to_help(request):
     return render(request, 'how_to_help.html')
 
@@ -691,7 +721,7 @@ def campain_detail_html(request, campaign_id):
         'reports': Report.objects.filter(
             campaign=campaign,
             status=Report.Status.APPROVED,
-        ),
+        ).prefetch_related('documents'),
     }
     return render(request, 'campaign_detail.html', context)
 

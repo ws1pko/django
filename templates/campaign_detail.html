@@ -87,13 +87,21 @@
             </section>
 
             <section class="detail-section" id="reports" hidden>
-                <h2>Отчёты</h2>
+                <div class="updates-heading">
+                    <h2>Отчёты</h2>
+                    {% if user.is_authenticated and user.pk == campaign.organizer_id and campaign.status != 'pending' and campaign.status != 'draft' and campaign.status != 'rejected' %}
+                        <a class="updates-add-link" href="{% url 'campaign_report_create' campaign.pk %}">+ Добавить отчёт</a>
+                    {% endif %}
+                </div>
                 {% if reports %}
                     {% for report in reports %}
                         <article class="report-item">
                             <div>
                                 <p class="update-date">{{ report.created_at|date:"j E Y" }}</p>
                                 <p>{{ report.description|truncatechars:180 }}</p>
+                                {% for document in report.documents.all %}
+                                    <a class="report-document-link" href="{{ document.file.url }}" target="_blank" rel="noopener">{{ document.caption|default:"Подтверждающий документ" }} ↗</a>
+                                {% endfor %}
                             </div>
                             <strong>{{ report.spent_amount|floatformat:0|intcomma }} ₽</strong>
                         </article>

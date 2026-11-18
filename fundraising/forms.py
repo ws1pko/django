@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
-from .models import Campaign, CampaignUpdate, Organization
+from .models import Campaign, CampaignUpdate, Organization, Report, ReportDocument
 
 User = get_user_model()
 
@@ -143,3 +143,35 @@ class CampaignUpdateForm(forms.ModelForm):
                 'rows': 6,
             }),
         }
+
+
+class ReportForm(forms.ModelForm):
+    document = forms.FileField(
+        label='Подтверждающий документ',
+        help_text='PDF, JPG или PNG, не более 10 МБ.',
+    )
+    caption = forms.CharField(
+        label='Подпись к документу',
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Например, чек за корм'}),
+    )
+
+    class Meta:
+        model = Report
+        fields = ('spent_amount', 'description')
+        widgets = {
+            'spent_amount': forms.NumberInput(attrs={
+                'min': '0', 'step': '0.01', 'placeholder': 'Например, 12500',
+            }),
+            'description': forms.Textarea(attrs={
+                'placeholder': 'Опишите результат сбора и на что потрачены средства',
+                'rows': 6,
+            }),
+        }
+
+    def clean_document(self):
+        uploaded = self.cleaned_data['document']
+        validator_document = ReportDocument(file=uploaded)
+        validator_document.full_clean(exclude=('report',))
+        return uploaded

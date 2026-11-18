@@ -5,6 +5,7 @@ urlpatterns = [
     path('campaigns/create/', views.campaign_create, name='campaign_create'),
     path('campaigns/<int:campaign_id>/edit/', views.campaign_edit, name='campaign_edit'),
     path('campaigns/<int:campaign_id>/updates/create/', views.campaign_update_create, name='campaign_update_create'),
+    path('campaigns/<int:campaign_id>/reports/create/', views.campaign_report_create, name='campaign_report_create'),
     path('campaigns/', views.campaign_list, name='campaign_list'),
     path('campaigns/<int:campaign_id>/',views.campain_detail_html,name='campaign_detail'),
     path('how-to-help/', views.how_to_help, name='how_to_help'),

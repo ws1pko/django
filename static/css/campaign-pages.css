@@ -550,6 +550,14 @@
     color: #273A36;
 }
 
+.report-document-link {
+    display: inline-flex;
+    margin-top: 8px;
+    color: #147565;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .organizer-panel {
     margin-top: 10px;
     padding: 18px;

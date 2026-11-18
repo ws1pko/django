@@ -220,6 +220,10 @@
                                 <a class="account-button account-button-outline"
                                    href="{% url 'campaign_update_create' campaign.pk %}">Добавить новость</a>
                             {% endif %}
+                            {% if campaign.status == 'active' or campaign.status == 'completed' or campaign.status == 'closed' %}
+                                <a class="account-button account-button-outline"
+                                   href="{% url 'campaign_report_create' campaign.pk %}">Добавить отчёт</a>
+                            {% endif %}
                         </article>
                     {% empty %}
                         <p class="account-empty">У вас пока нет сборов.</p>
