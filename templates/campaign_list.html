@@ -16,7 +16,7 @@
     <div class="catalog-layout">
         <aside class="filter-panel" aria-labelledby="filter-title">
             <h2 id="filter-title">Фильтры</h2>
-            <form method="get" action="">
+            <form method="get" >
                 <label class="filter-search">
                     <span class="visually-hidden">Название или ключевое слово</span>
                     <input type="search" name="q" value="{{ request.GET.q }}" placeholder="⌕　Название или ключевое слово">
@@ -60,7 +60,7 @@
         <section class="catalog-results" aria-label="Результаты каталога">
             <div class="results-toolbar">
                 <p>Найдено <strong>{{ result_count|default:page_obj.paginator.count|default:campaigns|length }}</strong> сбора</p>
-                <form method="get" action="" class="sort-form">
+                <form method="get"  class="sort-form">
                     {% for key, value in request.GET.items %}
                         {% if key != 'sort' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}
                     {% endfor %}

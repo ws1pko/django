@@ -549,7 +549,7 @@ def campaign_list(request):
         sort = 'actuality'
         campaigns = campaigns.order_by('deadline', '-created_at')
 
-    paginator = Paginator(campaigns, 9)
+    paginator = Paginator(campaigns, 20)
     page_obj = paginator.get_page(request.GET.get('page'))
     campaigns = list(page_obj.object_list)
 
