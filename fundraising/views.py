@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db import transaction
 from django.db.models import DecimalField, Max, Q, Sum, Value
 from django.db.models.functions import Coalesce
-
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -521,6 +521,7 @@ def organization_list(request):
     }
 
     return render(request, "organization_list.html", context=context)
+    #return JsonResponse(list(organizations.values()), safe=False)
 
 def campaign_list(request):
     campaigns = (
@@ -590,7 +591,6 @@ def campaign_list(request):
             round(campaign.raised_amount / campaign.goal_amount * 100),
         ) if campaign.goal_amount else 0
         campaign.days_left = max((campaign.deadline - today).days, 0)
-
     context = {
         'campaigns': campaigns,
         'categories': Category.objects.all(),
