@@ -147,7 +147,12 @@
             <h2 id="donation-title">Поддержать сбор</h2>
             <p class="donation-description">Пожертвование учебное, реальные деньги не списываются.</p>
 
-            <form method="post" action="{% url 'campaign_detail' campaign.pk %}">
+            <form method="post" action="{% url 'campaign_detail' campaign.pk %}"         onsubmit="
+            const button = this.querySelector('.donate-button');
+            if (button.disabled) return false;
+            button.disabled = true;
+            button.textContent = 'Обрабатываем…';
+            ">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="donate">
                 <div class="donation-presets" role="group" aria-label="Выберите сумму">
