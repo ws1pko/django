@@ -64,12 +64,13 @@
                                 {{ campaign.category.name }}
                             </span>
 
-                            {% if campaign.category.image %}
-                                <img
-                                    src="{{ campaign.category.image.url }}"
-                                    alt=""
-                                    class="organization-category-image"
-                                >
+                            {% if campaign.image %}
+                                    <img
+                                        src="{{ campaign.image.url }}"
+                                        alt=""
+                                        class="organization-category-image"
+                                        loading="lazy"
+                                    >
                             {% else %}
                                 <span class="organization-category-icon" aria-hidden="true">
                                     {% if campaign.category.theme == 'animals' %}🐾

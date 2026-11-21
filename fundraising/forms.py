@@ -121,9 +121,13 @@ class CampaignForm(forms.ModelForm):
         ) if user else Organization.objects.none()
         self.fields['organization'].empty_label = 'Выберите проверенную организацию'
         self.fields['image'].required = False
+        if self.instance.pk:
+            self.fields['deadline'].required = False
 
     def clean(self):
         cleaned = super().clean()
+        if self.instance.pk and not cleaned.get('deadline'):
+            cleaned['deadline'] = self.instance.deadline
         if cleaned.get('campaign_type') == Campaign.CampaignType.ORGANIZATION:
             if not cleaned.get('organization'):
                 self.add_error('organization', 'Выберите свою проверенную организацию.')
