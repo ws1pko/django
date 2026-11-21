@@ -299,7 +299,7 @@ def account_view(request, section='profile'):
         'total_donated': total_donated,
 
         'subscriptions': subscriptions,
-        
+
         'campaigns': campaigns,
         'campaign_status_filter': campaign_status_filter,
         'campaign_count': user_campaigns.count(),
@@ -498,14 +498,62 @@ def organization_detail(request, organization_id):
         pk=organization_id,
     )
 
-    campaigns = Campaign.objects.filter(
+    organization_campaigns = Campaign.objects.filter(
         organization=organization,
-        status=Campaign.Status.ACTIVE,
-    ).select_related('category', 'organization', 'organizer')
+    )
+
+    campaigns = (
+        organization_campaigns
+        .filter(status=Campaign.Status.ACTIVE)
+        .select_related('category', 'organization', 'organizer')
+        .annotate(
+            raised_amount=Coalesce(
+                Sum(
+                    'donations__amount',
+                    filter=Q(
+                        donations__status=Donation.Status.COMPLETED,
+                    ),
+                ),
+                Value(Decimal('0.00')),
+                output_field=DecimalField(max_digits=14, decimal_places=2),
+            ),
+        )
+    )
+
+    today = timezone.localdate()
+
+    for campaign in campaigns:
+        campaign.progress_percent = min(
+            100,
+            round(campaign.raised_amount / campaign.goal_amount * 100),
+        ) if campaign.goal_amount else 0
+
+        campaign.days_left = max(
+            (campaign.deadline - today).days,
+            0,
+        )
+
+    completed_donations = Donation.objects.filter(
+        campaign__organization=organization,
+        status=Donation.Status.COMPLETED,
+    )
+
+    total_raised = completed_donations.aggregate(
+        total=Coalesce(
+            Sum('amount'),
+            Value(Decimal('0.00')),
+            output_field=DecimalField(max_digits=14, decimal_places=2),
+        ),
+    )['total']
 
     context = {
         'organization': organization,
         'campaigns': campaigns,
+        'completed_campaign_count': organization_campaigns.filter(
+            status=Campaign.Status.COMPLETED,
+        ).count(),
+        'participant_count': completed_donations.count(),
+        'total_raised': total_raised,
     }
 
     return render(request, 'organization_detail.html', context)
