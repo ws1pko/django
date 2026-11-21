@@ -478,8 +478,26 @@ def organizer_detail(request, organizer_id):
     campaigns = Campaign.objects.filter(
         organizer=organizer,
         organization__isnull=True,
-        status=Campaign.Status.ACTIVE,
-    ).select_related('category')
+        status__in=(
+            Campaign.Status.ACTIVE,
+            Campaign.Status.COMPLETED,
+        ),
+    ).select_related('category').annotate(
+        raised_amount=Coalesce(
+            Sum(
+                'donations__amount',
+                filter=Q(donations__status=Donation.Status.COMPLETED),
+            ),
+            Value(Decimal('0.00')),
+            output_field=DecimalField(max_digits=14, decimal_places=2),
+        ),
+    )
+
+    for campaign in campaigns:
+        campaign.progress_percent = min(
+            100,
+            round(campaign.raised_amount / campaign.goal_amount * 100),
+        ) if campaign.goal_amount else 0
 
     return render(
         request,
@@ -504,7 +522,12 @@ def organization_detail(request, organization_id):
 
     campaigns = (
         organization_campaigns
-        .filter(status=Campaign.Status.ACTIVE)
+        .filter(
+            status__in=(
+                Campaign.Status.ACTIVE,
+                Campaign.Status.COMPLETED,
+            ),
+        )
         .select_related('category', 'organization', 'organizer')
         .annotate(
             raised_amount=Coalesce(

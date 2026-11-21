@@ -35,13 +35,13 @@
     <section class="organization-stats" aria-label="Статистика организатора">
         <div class="organization-stat">
             <strong>{{ campaigns|length }}</strong>
-            <span>активных личных сборов</span>
+            <span>личных сборов</span>
         </div>
     </section>
 
     <section class="organization-campaigns">
         <p class="organization-eyebrow">Проекты человека</p>
-        <h2>Активные личные сборы</h2>
+        <h2>Все сборы</h2>
 
         {% if campaigns %}
             <div class="organization-campaign-grid">
@@ -76,12 +76,21 @@
                                 {{ campaign.description|truncatechars:120 }}
                             </p>
 
+                            <progress
+                                class="organization-progress"
+                                value="{{ campaign.progress_percent }}"
+                                max="100"
+                            >
+                                {{ campaign.progress_percent }}%
+                            </progress>
+
                             <div class="organization-amounts">
-                                <strong>Цель: {{ campaign.goal_amount|floatformat:0|intcomma }} ₽</strong>
-                                <span>до {{ campaign.deadline|date:"j E Y" }}</span>
+                                <strong>{{ campaign.raised_amount|floatformat:0|intcomma }} ₽ собрано</strong>
+                                <span>из {{ campaign.goal_amount|floatformat:0|intcomma }} ₽</span>
                             </div>
 
                             <div class="organization-card-bottom">
+                                <span>до {{ campaign.deadline|date:"j E Y" }}</span>
                                 <a href="{% url 'campaign_detail' campaign.pk %}">
                                     Подробнее о сборе →
                                 </a>
