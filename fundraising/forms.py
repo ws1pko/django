@@ -144,7 +144,6 @@ class CampaignUpdateForm(forms.ModelForm):
             }),
         }
 
-
 class ReportForm(forms.ModelForm):
     document = forms.FileField(
         label='Подтверждающий документ',
@@ -154,7 +153,9 @@ class ReportForm(forms.ModelForm):
         label='Подпись к документу',
         max_length=200,
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': 'Например, чек за корм'}),
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Например, чек за корм'}
+        ),
     )
 
     class Meta:
@@ -162,7 +163,9 @@ class ReportForm(forms.ModelForm):
         fields = ('spent_amount', 'description')
         widgets = {
             'spent_amount': forms.NumberInput(attrs={
-                'min': '0', 'step': '0.01', 'placeholder': 'Например, 12500',
+                'min': '0',
+                'step': '0.01',
+                'placeholder': 'Например, 12500',
             }),
             'description': forms.Textarea(attrs={
                 'placeholder': 'Опишите результат сбора и на что потрачены средства',
@@ -172,6 +175,22 @@ class ReportForm(forms.ModelForm):
 
     def clean_document(self):
         uploaded = self.cleaned_data['document']
-        validator_document = ReportDocument(file=uploaded)
-        validator_document.full_clean(exclude=('report',))
+        allowed_extensions = {'.pdf', '.jpg', '.jpeg', '.png'}
+
+        extension = (
+            f".{uploaded.name.rsplit('.', 1)[-1].lower()}"
+            if '.' in uploaded.name
+            else ''
+        )
+
+        if extension not in allowed_extensions:
+            raise ValidationError(
+                'Неподдерживаемый формат файла. Допускаются PDF, JPG и PNG.'
+            )
+
+        if uploaded.size > 10 * 1024 * 1024:
+            raise ValidationError(
+                'Размер файла не должен превышать 10 МБ.'
+            )
+
         return uploaded
