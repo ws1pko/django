@@ -197,4 +197,19 @@ class ReportForm(forms.ModelForm):
                 'Размер файла не должен превышать 10 МБ.'
             )
 
+        header = uploaded.read(8)
+        uploaded.seek(0)
+
+        valid_signature = {
+            '.pdf': header.startswith(b'%PDF-'),
+            '.jpg': header.startswith(b'\xff\xd8\xff'),
+            '.jpeg': header.startswith(b'\xff\xd8\xff'),
+            '.png': header.startswith(b'\x89PNG\r\n\x1a\n'),
+        }
+
+        if not valid_signature[extension]:
+            raise ValidationError(
+                'Содержимое файла не соответствует его формату.'
+            )
+
         return uploaded
