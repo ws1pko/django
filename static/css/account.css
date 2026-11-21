@@ -675,3 +675,8 @@
 .account-flash-messages { display: grid; gap: 8px; margin-bottom: 18px; }
 .account-flash-messages p { margin: 0; padding: 12px 14px; border-radius: 9px; background: #e8f5f1; color: #126b5d; }
 .account-flash-messages p.error { background: #fff0ee; color: #a62b21; }
+
+.moderation-comment {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}

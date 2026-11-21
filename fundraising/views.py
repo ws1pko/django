@@ -299,7 +299,7 @@ def account_view(request, section='profile'):
         'total_donated': total_donated,
 
         'subscriptions': subscriptions,
-
+        
         'campaigns': campaigns,
         'campaign_status_filter': campaign_status_filter,
         'campaign_count': user_campaigns.count(),

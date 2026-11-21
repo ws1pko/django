@@ -119,48 +119,101 @@
                     </table>
                 </div>
 
-            {% elif active_page == 'subscriptions' %}
-                <p class="account-eyebrow">Будьте в курсе</p>
-                <h1>Мои подписки</h1>
-                <p class="account-lead">
-                    Вы получите обновления, когда организатор опубликует новости.
-                </p>
+{% elif active_page == 'campaigns' %}
+    <div class="campaign-heading">
+        <div>
+            <p class="account-eyebrow">Кабинет организатора</p>
+            <h1>Мои сборы</h1>
+            <p class="account-lead">
+                Управляйте кампаниями и следите за их статусом.
+            </p>
+        </div>
+        <a class="account-button" href="{% url 'campaign_create' %}">
+            + Создать сбор
+        </a>
+    </div>
 
-                <div class="subscription-list">
-                    {% for subscription in subscriptions %}
-                        <article class="subscription-item">
-                            <div class="subscription-icon" aria-hidden="true">
-                                {% if subscription.campaign.category.theme == 'animals' %}🐾
-                                {% elif subscription.campaign.category.theme == 'family' %}♡
-                                {% else %}✦{% endif %}
-                            </div>
+    <nav class="campaign-filters" aria-label="Фильтр сборов">
+        <a class="{% if campaign_status_filter == 'all' %}active{% endif %}"
+           href="?status=all"
+           {% if campaign_status_filter == 'all' %}aria-current="page"{% endif %}>
+            Все сборы {{ campaign_count }}
+        </a>
+        <a class="{% if campaign_status_filter == 'active' %}active{% endif %}"
+           href="?status=active"
+           {% if campaign_status_filter == 'active' %}aria-current="page"{% endif %}>
+            Активные {{ active_campaign_count }}
+        </a>
+        <a class="{% if campaign_status_filter == 'pending' %}active{% endif %}"
+           href="?status=pending"
+           {% if campaign_status_filter == 'pending' %}aria-current="page"{% endif %}>
+            На модерации {{ pending_campaign_count }}
+        </a>
+        <a class="{% if campaign_status_filter == 'completed' %}active{% endif %}"
+           href="?status=completed"
+           {% if campaign_status_filter == 'completed' %}aria-current="page"{% endif %}>
+            Завершённые {{ completed_campaign_count }}
+        </a>
+    </nav>
 
-                            <div class="subscription-info">
-                                <h2>{{ subscription.campaign.title }}</h2>
-                                {% if subscription.latest_update_at %}
-                                    <p>Последнее обновление:
-                                        {{ subscription.latest_update_at|date:"j M" }}
-                                    </p>
-                                {% else %}
-                                    <p>Обновлений пока нет</p>
-                                {% endif %}
-                                <a href="{% url 'campaign_detail' subscription.campaign.pk %}#updates">Открыть новости сбора →</a>
-                            </div>
-
-                            <form method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="subscription_id"
-                                       value="{{ subscription.pk }}">
-                                <button class="account-button account-button-outline"
-                                        type="submit" name="unsubscribe" value="1">
-                                    Отписаться
-                                </button>
-                            </form>
-                        </article>
-                    {% empty %}
-                        <p class="account-empty">У вас пока нет подписок.</p>
-                    {% endfor %}
+    <div class="my-campaign-list">
+        {% for campaign in campaigns %}
+            <article class="my-campaign">
+                <div class="campaign-icon theme-{{ campaign.category.theme }}"
+                     aria-hidden="true">
+                    {% if campaign.category.theme == 'animals' %}🐾
+                    {% elif campaign.category.theme == 'family' %}♡
+                    {% else %}✦{% endif %}
                 </div>
+
+                <div class="my-campaign-info">
+                    <h2>{{ campaign.title }}</h2>
+                    <p>
+                        Создан {{ campaign.created_at|date:"j M" }}
+                        · цель {{ campaign.goal_amount|floatformat:0|intcomma }} ₽
+                    </p>
+
+                    <progress value="{{ campaign.progress_percent|default:0 }}"
+                              max="100">
+                        {{ campaign.progress_percent|default:0 }}%
+                    </progress>
+
+                    <p>
+                        Собрано {{ campaign.raised_amount|default:0|floatformat:0|intcomma }} ₽
+                        · {{ campaign.progress_percent|default:0 }}%
+                    </p>
+                </div>
+
+                <span class="status-pill">{{ campaign.get_status_display }}</span>
+                {% if campaign.moderation_comment %}
+                    <p class="moderation-comment">
+                        Комментарий: {{ campaign.moderation_comment }}
+                    </p>
+                {% endif %}
+
+                <a class="account-button account-button-outline"
+                   href="{% url 'campaign_edit' campaign.pk %}">
+                    Редактировать
+                </a>
+
+                {% if campaign.status == 'active' %}
+                    <a class="account-button account-button-outline"
+                       href="{% url 'campaign_update_create' campaign.pk %}">
+                        Добавить новость
+                    </a>
+                {% endif %}
+
+                {% if campaign.status == 'active' or campaign.status == 'completed' or campaign.status == 'closed' %}
+                    <a class="account-button account-button-outline"
+                       href="{% url 'campaign_report_create' campaign.pk %}">
+                        Добавить отчёт
+                    </a>
+                {% endif %}
+            </article>
+        {% empty %}
+            <p class="account-empty">У вас пока нет сборов.</p>
+        {% endfor %}
+    </div>
 
             {% elif active_page == 'campaigns' %}
                 <div class="campaign-heading">
