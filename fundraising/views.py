@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db import transaction
 from django.db.models import DecimalField, Max, Q, Sum, Value
 from django.db.models.functions import Coalesce
-from django.http import JsonResponse
+from django.http import JsonResponse,Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -656,7 +656,9 @@ def campain_detail_html(request, campaign_id):
             raised_amount=Coalesce(
                 Sum(
                     'donations__amount',
-                    filter=Q(donations__status=Donation.Status.COMPLETED),
+                    filter=Q(
+                        donations__status=Donation.Status.COMPLETED,
+                    ),
                 ),
                 Value(Decimal('0.00')),
                 output_field=DecimalField(max_digits=12, decimal_places=2),
@@ -664,6 +666,29 @@ def campain_detail_html(request, campaign_id):
         ),
         pk=campaign_id,
     )
+    private_statuses = (
+        Campaign.Status.DRAFT,
+        Campaign.Status.PENDING,
+        Campaign.Status.REJECTED,
+    )
+
+    if campaign.status in private_statuses:
+        user = request.user
+        can_view = (
+            user.is_authenticated
+            and (
+                campaign.organizer_id == user.pk
+                or user.is_superuser
+                or user.role == User.Role.MODERATOR
+            )
+        )
+        if not can_view:
+            raise Http404
+
+    campaign.progress_percent = min(
+        100,
+        round(campaign.raised_amount / campaign.goal_amount * 100),
+    ) if campaign.goal_amount else 0
 
     campaign.progress_percent = min(
         100,
