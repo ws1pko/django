@@ -898,3 +898,12 @@
 .updates-add-link { color: #147565; font-size: 14px; font-weight: 700; text-decoration: none; }
 .updates-add-link:hover { text-decoration: underline; }
 @media (max-width: 560px) { .updates-heading { align-items: flex-start; flex-direction: column; } }
+
+.pagination {
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.pagination .pagination-ellipsis {
+    min-width: 18px;
+}

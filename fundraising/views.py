@@ -182,7 +182,7 @@ def moderation_report_action(request, report_id):
 
     return redirect('moderation_reports')
 
-@login_required
+@login_required(login_url='login')
 def account_view(request, section='profile'):
     organization_form = OrganizationApplicationForm()
     if request.method == 'POST' and section == 'organization':
@@ -653,6 +653,14 @@ def campaign_list(request):
 
     paginator = Paginator(campaigns, 20)
     page_obj = paginator.get_page(request.GET.get('page'))
+    pagination_numbers = paginator.get_elided_page_range(
+    page_obj.number,
+    on_each_side=1,
+    on_ends=1,
+    )
+
+    pagination_query = request.GET.copy()
+    pagination_query.pop('page', None)
     campaigns = list(page_obj.object_list)
 
     today = timezone.localdate()
@@ -667,6 +675,9 @@ def campaign_list(request):
         'categories': Category.objects.all(),
         'page_obj': page_obj,
         'result_count': paginator.count,
+        'page_range': pagination_numbers,
+        'pagination_query': pagination_query.urlencode(),
+        'pagination_ellipsis': paginator.ELLIPSIS,
     }
     return render(request, 'campaign_list.html', context)
 

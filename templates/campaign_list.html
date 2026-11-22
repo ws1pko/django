@@ -118,18 +118,28 @@
             {% if page_obj and page_obj.paginator.num_pages > 1 %}
                 <nav class="pagination" aria-label="Страницы каталога">
                     {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">← Назад</a>
-                    {% else %}<span class="pagination-muted">← Назад</span>{% endif %}
-                    {% for page_number in page_obj.paginator.page_range %}
-                        {% if page_number == page_obj.number %}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">← Назад</a>
+                    {% else %}
+                        <span class="pagination-muted">← Назад</span>
+                    {% endif %}
+
+                    {% for page_number in page_range %}
+                        {% if page_number == pagination_ellipsis %}
+                            <span class="pagination-ellipsis" aria-hidden="true">{{ page_number }}</span>
+                        {% elif page_number == page_obj.number %}
                             <span class="page-current" aria-current="page">{{ page_number }}</span>
                         {% else %}
-                            <a class="page-number" href="?page={{ page_number }}">{{ page_number }}</a>
+                            <a class="page-number" href="?page={{ page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">
+                                {{ page_number }}
+                            </a>
                         {% endif %}
                     {% endfor %}
+
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">Вперёд →</a>
-                    {% else %}<span class="pagination-muted">Вперёд →</span>{% endif %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">Вперёд →</a>
+                    {% else %}
+                        <span class="pagination-muted">Вперёд →</span>
+                    {% endif %}
                 </nav>
             {% endif %}
         </section>
