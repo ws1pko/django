@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from .models import Campaign, CampaignUpdate, Organization, Report, ReportDocument
-
+from django.core.validators import FileExtensionValidator
 User = get_user_model()
 
 
@@ -92,16 +92,44 @@ class OrganizationApplicationForm(forms.ModelForm):
             }),
         }
 
-
 class CampaignForm(forms.ModelForm):
+    image = forms.ImageField(
+        required=False,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=['jpg', 'jpeg', 'png', 'webp'],
+            ),
+        ],
+        widget=forms.ClearableFileInput(
+            attrs={'accept': '.jpg,.jpeg,.png,.webp'}
+        ),
+    )
+
     class Meta:
         model = Campaign
-        fields = ('campaign_type', 'title', 'category', 'goal_amount', 'deadline',
-                  'description', 'is_group', 'organization', 'image')
+        fields = (
+            'campaign_type',
+            'title',
+            'category',
+            'goal_amount',
+            'deadline',
+            'description',
+            'is_group',
+            'organization',
+            'image',
+        )
         widgets = {
             'campaign_type': forms.Select(),
-            'title': forms.TextInput(attrs={'placeholder': 'Например, поможем приюту «Лапа»'}),
-            'goal_amount': forms.NumberInput(attrs={'min': '1', 'step': '1', 'placeholder': '120000'}),
+            'title': forms.TextInput(
+                attrs={'placeholder': 'Например, поможем приюту «Лапа»'}
+            ),
+            'goal_amount': forms.NumberInput(
+                attrs={
+                    'min': '0.01',
+                    'step': '0.01',
+                    'placeholder': '120000',
+                }
+            ),
             'deadline': forms.DateInput(attrs={'type': 'date'}),
             'description': forms.Textarea(attrs={
                 'placeholder': 'Расскажите, кому нужна помощь и на что пойдут средства',
@@ -109,30 +137,67 @@ class CampaignForm(forms.ModelForm):
             }),
             'is_group': forms.CheckboxInput(),
             'organization': forms.Select(),
-            'image': forms.ClearableFileInput(attrs={'accept': '.jpg,.jpeg,.png,.webp'}),
         }
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['organization'].required = False
-        self.fields['organization'].queryset = Organization.objects.filter(
-            created_by=user,
-            verification_status=Organization.VerificationStatus.VERIFIED,
-        ) if user else Organization.objects.none()
+        self.fields['organization'].queryset = (
+            Organization.objects.filter(
+                created_by=user,
+                verification_status=Organization.VerificationStatus.VERIFIED,
+            )
+            if user else Organization.objects.none()
+        )
         self.fields['organization'].empty_label = 'Выберите проверенную организацию'
         self.fields['image'].required = False
+
         if self.instance.pk:
             self.fields['deadline'].required = False
 
+    def clean_image(self):
+        uploaded = self.cleaned_data.get('image')
+        if not uploaded:
+            return uploaded
+
+        extension = (
+            '.' + uploaded.name.rsplit('.', 1)[-1].lower()
+            if '.' in uploaded.name else ''
+        )
+        expected_formats = {
+            '.jpg': 'JPEG',
+            '.jpeg': 'JPEG',
+            '.png': 'PNG',
+            '.webp': 'WEBP',
+        }
+        actual_format = getattr(
+            getattr(uploaded, 'image', None),
+            'format',
+            None,
+        )
+
+        if actual_format != expected_formats.get(extension):
+            raise ValidationError(
+                'Содержимое файла не соответствует его расширению.'
+            )
+
+        return uploaded
+
     def clean(self):
         cleaned = super().clean()
+
         if self.instance.pk and not cleaned.get('deadline'):
             cleaned['deadline'] = self.instance.deadline
+
         if cleaned.get('campaign_type') == Campaign.CampaignType.ORGANIZATION:
             if not cleaned.get('organization'):
-                self.add_error('organization', 'Выберите свою проверенную организацию.')
+                self.add_error(
+                    'organization',
+                    'Выберите свою проверенную организацию.',
+                )
         else:
             cleaned['organization'] = None
+
         return cleaned
 
 

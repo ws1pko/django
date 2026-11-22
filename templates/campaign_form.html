@@ -11,7 +11,13 @@
     {% if is_edit %}<span class="campaign-state">● {{ campaign.get_status_display }}</span>{% endif %}
   </header>
 
-  <form class="campaign-form-card" method="post" enctype="multipart/form-data" novalidate>
+  <form class="campaign-form-card" method="post" enctype="multipart/form-data" novalidate onsubmit="
+ if (this.dataset.submitting === 'true') return false;
+ this.dataset.submitting = 'true';
+ const button = this.querySelector('.form-submit');
+ button.disabled = true;
+ button.textContent = 'Отправляем…'; "
+>
     {% csrf_token %}
     {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
     <div class="form-field">
