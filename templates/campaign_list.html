@@ -59,7 +59,7 @@
 
         <section class="catalog-results" aria-label="Результаты каталога">
             <div class="results-toolbar">
-                <p>Найдено <strong>{{ result_count|default:page_obj.paginator.count|default:campaigns|length }}</strong> сбора</p>
+               <p>Найдено <strong>{{ result_count }}</strong> сборов</p>
                 <form method="get"  class="sort-form">
                     {% for key, value in request.GET.items %}
                         {% if key != 'sort' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}
