@@ -724,6 +724,8 @@ def campain_detail_html(request, campaign_id):
         round(campaign.raised_amount / campaign.goal_amount * 100),
     ) if campaign.goal_amount else 0
 
+    campaign.deadline_passed = campaign.deadline < timezone.localdate()
+
     campaign.progress_percent = min(
         100,
         round(campaign.raised_amount / campaign.goal_amount * 100),
@@ -753,8 +755,11 @@ def campain_detail_html(request, campaign_id):
             return redirect('campaign_detail', campaign_id=campaign.pk)
 
         if action == 'donate':
-            if campaign.status != Campaign.Status.ACTIVE:
-                messages.error(request, 'Пожертвования доступны только активным сборам.')
+            if (
+                campaign.status != Campaign.Status.ACTIVE
+                or campaign.deadline < timezone.localdate()
+            ):
+                messages.error(request, 'Срок сбора завершён, пожертвования недоступны.')
                 return redirect('campaign_detail', campaign_id=campaign.pk)
 
             raw_amount = (

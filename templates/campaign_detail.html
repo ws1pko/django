@@ -19,7 +19,7 @@
     <div class="detail-layout">
         <article class="detail-main">
             <div class="detail-art theme-{{ campaign.category.theme|default:'general' }}">
-                <span class="category-pill">{{ campaign.get_status_display }}</span>
+                <span class="category-pill">{% if campaign.deadline_passed %}Срок сбора истёк{% else %}{{ campaign.get_status_display }}{% endif %}</span>
                 {% if campaign.image %}
                     <img src="{{ campaign.image.url }}" alt="Иллюстрация сбора: {{ campaign.title }}" class="campaign-cover-image">
                 {% elif campaign.category.image %}
@@ -44,7 +44,11 @@
                     Организатор:
                     <strong>{% if campaign.organization %}{{ campaign.organization.name }}{% else %}{{ campaign.organizer.get_full_name|default:campaign.organizer.username }}{% endif %}</strong>
                 </span>
-                <span>Сбор активен до {{ campaign.deadline|date:"j E Y" }}</span>
+                {% if campaign.deadline_passed %}
+                    <span>Срок сбора истёк {{ campaign.deadline|date:"j E Y" }}</span>
+                {% else %}
+                    <span>Сбор активен до {{ campaign.deadline|date:"j E Y" }}</span>
+                {% endif %}
             </div>
 
             <progress class="campaign-progress detail-progress" value="{{ progress_percent|default:campaign.progress_percent|default:0 }}" max="100">
@@ -147,6 +151,7 @@
             <h2 id="donation-title">Поддержать сбор</h2>
             <p class="donation-description">Пожертвование учебное, реальные деньги не списываются.</p>
 
+            {% if campaign.status == 'active' and not campaign.deadline_passed %}
             <form method="post" action="{% url 'campaign_detail' campaign.pk %}"         onsubmit="
             const button = this.querySelector('.donate-button');
             if (button.disabled) return false;
@@ -170,6 +175,9 @@
                 <button class="donate-button" type="submit">Пожертвовать</button>
                 <p class="donation-note">🔒 Тестовая операция без списания средств</p>
             </form>
+            {% else %}
+                <p class="donation-description">Сбор завершён. Пожертвования больше не принимаются.</p>
+            {% endif %}
             {% if user.is_authenticated %}
                 <form method="post" action="{% url 'campaign_detail' campaign.pk %}">
                     {% csrf_token %}

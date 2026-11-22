@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from .models import Campaign, CampaignUpdate, Organization, Report, ReportDocument
 from django.core.validators import FileExtensionValidator
 User = get_user_model()
@@ -141,6 +142,8 @@ class CampaignForm(forms.ModelForm):
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
+        today = timezone.localdate()
+        self.fields['deadline'].widget.attrs['min'] = today.isoformat()
         self.fields['organization'].required = False
         self.fields['organization'].queryset = (
             Organization.objects.filter(
@@ -153,7 +156,15 @@ class CampaignForm(forms.ModelForm):
         self.fields['image'].required = False
 
         if self.instance.pk:
-            self.fields['deadline'].required = False
+            # An expired campaign must receive a new valid deadline before it
+            # can be edited and sent for moderation again.
+            self.fields['deadline'].required = self.instance.deadline < today
+
+    def clean_deadline(self):
+        deadline = self.cleaned_data.get('deadline')
+        if deadline and deadline < timezone.localdate():
+            raise ValidationError('Дата окончания сбора не может быть в прошлом.')
+        return deadline
 
     def clean_image(self):
         uploaded = self.cleaned_data.get('image')
@@ -186,7 +197,11 @@ class CampaignForm(forms.ModelForm):
     def clean(self):
         cleaned = super().clean()
 
-        if self.instance.pk and not cleaned.get('deadline'):
+        if (
+            self.instance.pk
+            and not self.fields['deadline'].required
+            and not cleaned.get('deadline')
+        ):
             cleaned['deadline'] = self.instance.deadline
 
         if cleaned.get('campaign_type') == Campaign.CampaignType.ORGANIZATION:
