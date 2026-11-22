@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
+from datetime import timedelta
 
+from pathlib import Path
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n(!+c#_&c_zw*z2r^@n8@fep2yi@xo3&imvgg(@55go*&n7f!+'
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    '127.0.0.1,localhost',
+).split(',')
 
 
 # Application definition
@@ -39,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'fundraising',
+    'axes'
 ]
 
 MIDDLEWARE = [
@@ -49,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -125,3 +132,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    # AxesStandaloneBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'axes.backends.AxesStandaloneBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = timedelta(minutes=15)
