@@ -6,7 +6,7 @@ from django.utils import timezone
 from .models import Campaign, CampaignUpdate, Organization, Report, ReportDocument
 from django.core.validators import FileExtensionValidator
 User = get_user_model()
-
+from PIL import Image, UnidentifiedImageError
 
 class LoginForm(AuthenticationForm):
       username = forms.EmailField(
@@ -165,27 +165,33 @@ class CampaignForm(forms.ModelForm):
         if deadline and deadline < timezone.localdate():
             raise ValidationError('Дата окончания сбора не может быть в прошлом.')
         return deadline
-
     def clean_image(self):
         uploaded = self.cleaned_data.get('image')
         if not uploaded:
             return uploaded
 
-        extension = (
-            '.' + uploaded.name.rsplit('.', 1)[-1].lower()
-            if '.' in uploaded.name else ''
-        )
         expected_formats = {
             '.jpg': 'JPEG',
             '.jpeg': 'JPEG',
             '.png': 'PNG',
             '.webp': 'WEBP',
         }
-        actual_format = getattr(
-            getattr(uploaded, 'image', None),
-            'format',
-            None,
+        extension = (
+            '.' + uploaded.name.rsplit('.', 1)[-1].lower()
+            if '.' in uploaded.name else ''
         )
+
+        try:
+            uploaded.seek(0)
+            with Image.open(uploaded) as image:
+                actual_format = image.format
+                image.verify()
+        except (UnidentifiedImageError, OSError, SyntaxError):
+            raise ValidationError(
+                'Файл не является корректным изображением. Загрузите JPG, PNG или WebP.'
+            )
+        finally:
+            uploaded.seek(0)
 
         if actual_format != expected_formats.get(extension):
             raise ValidationError(

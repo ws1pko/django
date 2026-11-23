@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block main %}
+<section class="error-page">
+    <p class="error-page-code">403</p>
+    <h1>Нет доступа</h1>
+    <p>У вас нет прав для просмотра этой страницы. Войдите в аккаунт с подходящими правами или вернитесь в каталог.</p>
+    <div class="error-page-actions">
+        <a class="button button-primary" href="{% url 'home' %}">На главную</a>
+        <a class="button button-outline" href="{% url 'campaign_list' %}">Найти сбор</a>
+    </div>
+</section>
+{% endblock main %}

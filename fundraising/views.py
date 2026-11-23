@@ -15,14 +15,23 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import CampaignParticipant, CampaignUpdate, Category, Donation, Report, ReportDocument, Campaign, Organization, Subscription, User
 from .forms import CampaignForm, CampaignUpdateForm, LoginForm, OrganizationApplicationForm, RegisterForm, ReportForm
+from functools import wraps
+from django.core.exceptions import PermissionDenied
+
 
 def moderator_required(view_func):
-    return user_passes_test(
-        lambda user: user.is_authenticated and (
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        user = request.user
+
+        if not user.is_authenticated or not (
             user.is_superuser or user.role == User.Role.MODERATOR
-        ),
-        login_url='login',
-    )(view_func)
+        ):
+            raise PermissionDenied
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper
 
 THEME_STYLES = {
     'animals': 'animals',
@@ -31,7 +40,6 @@ THEME_STYLES = {
 }
 
 
-@login_required(login_url='login')
 @moderator_required
 def moderation_dashboard(request):
     campaign_count = Campaign.objects.filter(
@@ -55,7 +63,6 @@ def moderation_dashboard(request):
 
 
 
-@login_required(login_url='login')
 @moderator_required
 def moderation_campaigns(request):
     campaigns = Campaign.objects.filter(
@@ -67,7 +74,6 @@ def moderation_campaigns(request):
     })
 
 
-@login_required(login_url='login')
 @moderator_required
 def moderation_campaign_action(request, campaign_id):
     if request.method != 'POST':
@@ -101,7 +107,6 @@ def moderation_campaign_action(request, campaign_id):
     return redirect('moderation_campaigns')
 
 
-@login_required(login_url='login')
 @moderator_required
 def moderation_organizations(request):
     organizations = Organization.objects.filter(
@@ -113,7 +118,6 @@ def moderation_organizations(request):
     })
 
 
-@login_required(login_url='login')
 @moderator_required
 def moderation_organization_action(request, organization_id):
     if request.method != 'POST':
@@ -141,7 +145,7 @@ def moderation_organization_action(request, organization_id):
     return redirect('moderation_organizations')
 
 
-@login_required(login_url='login')
+
 @moderator_required
 def moderation_reports(request):
     reports = Report.objects.filter(
@@ -155,7 +159,6 @@ def moderation_reports(request):
     })
 
 
-@login_required(login_url='login')
 @moderator_required
 def moderation_report_action(request, report_id):
     if request.method != 'POST':
@@ -461,7 +464,7 @@ def register_view(request):
 
             user.save()
 
-            login(request,user)
+            login(request,user ,  backend='django.contrib.auth.backends.ModelBackend')
             return redirect('home')
     else:
         form = RegisterForm()
